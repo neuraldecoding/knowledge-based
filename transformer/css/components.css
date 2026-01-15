@@ -1,0 +1,684 @@
+/* ============================================
+   TRANSFORMER TUTORIAL - COMPONENT STYLES
+   Specialized components for tutorial elements
+   ============================================ */
+
+/* ============================================
+   EMBEDDING VISUALIZATION
+   ============================================ */
+
+.embedding-visual {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+}
+
+.embedding-example {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.word {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+}
+
+.arrow {
+    font-size: 2rem;
+    color: var(--text-muted);
+}
+
+.vector {
+    font-family: var(--font-code);
+    font-size: 1.125rem;
+    color: var(--accent-secondary);
+    background: rgba(139, 92, 246, 0.1);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   MATRIX VISUALIZATION
+   ============================================ */
+
+.matrix-visual {
+    margin: var(--space-md) 0;
+    overflow-x: auto;
+}
+
+.matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.matrix-label {
+    font-weight: 600;
+    color: var(--accent-primary);
+    padding: var(--space-sm);
+    text-align: right;
+    border-right: 2px solid rgba(0, 212, 255, 0.3);
+}
+
+.matrix-cell {
+    font-family: var(--font-code);
+    color: var(--text-secondary);
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* ============================================
+   QKV CARDS
+   ============================================ */
+
+.qkv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.qkv-card {
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    text-align: center;
+    border: 2px solid;
+    transition: all var(--transition-base);
+}
+
+.qkv-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.query-card {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--color-query);
+}
+
+.key-card {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--color-key);
+}
+
+.value-card {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: var(--color-value);
+}
+
+.qkv-card h4 {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-sm);
+}
+
+.query-card h4 {
+    color: var(--color-query);
+}
+
+.key-card h4 {
+    color: var(--color-key);
+}
+
+.value-card h4 {
+    color: var(--color-value);
+}
+
+.qkv-card p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-sm);
+}
+
+.formula {
+    font-family: var(--font-code);
+    font-size: 1rem;
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.3);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    display: inline-block;
+}
+
+/* ============================================
+   CALCULATION STEPS
+   ============================================ */
+
+.calculation-steps {
+    display: grid;
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.step {
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--accent-primary);
+}
+
+.step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-content h4 {
+    font-size: 1.125rem;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+}
+
+.step-content p {
+    font-family: var(--font-code);
+    color: var(--accent-primary);
+    margin-bottom: var(--space-xs);
+}
+
+/* ============================================
+   ANIMATION CONTAINERS
+   ============================================ */
+
+.animation-container {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin: var(--space-md) 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.animation-container canvas {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.animation-controls {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: center;
+    margin-top: var(--space-md);
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   INTERACTIVE DEMO
+   ============================================ */
+
+.example-sentence {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: var(--space-md) 0;
+}
+
+.word-box {
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.word-box:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-primary);
+    transform: scale(1.05);
+}
+
+.word-box.selected {
+    background: var(--gradient-primary);
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.highlight-word {
+    color: var(--accent-primary);
+    font-weight: 700;
+    padding: 2px 6px;
+    background: rgba(0, 212, 255, 0.2);
+    border-radius: 4px;
+}
+
+.attention-explanation {
+    margin: var(--space-md) 0;
+    padding: var(--space-md);
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   BENEFITS GRID
+   ============================================ */
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.benefit-card {
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.benefit-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--accent-primary);
+    transform: translateY(-4px);
+}
+
+.benefit-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-sm);
+}
+
+.benefit-card h4 {
+    font-size: 1.125rem;
+    margin-bottom: var(--space-sm);
+    color: var(--accent-primary);
+}
+
+.benefit-card p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+}
+
+/* ============================================
+   COMPARISON BOX
+   ============================================ */
+
+.comparison-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.comparison-item {
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.comparison-item.highlight {
+    border-color: var(--accent-primary);
+    background: rgba(0, 212, 255, 0.05);
+}
+
+.comparison-item h4 {
+    margin-bottom: var(--space-sm);
+}
+
+.example {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ============================================
+   ARCHITECTURE DIAGRAMS
+   ============================================ */
+
+.architecture-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    margin: var(--space-md) 0;
+}
+
+.arch-component {
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    border: 2px solid;
+}
+
+.encoder-comp {
+    background: rgba(59, 130, 246, 0.05);
+    border-color: var(--color-query);
+}
+
+.decoder-comp {
+    background: rgba(139, 92, 246, 0.05);
+    border-color: var(--color-value);
+}
+
+.arch-component h4 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-md);
+}
+
+.arch-component ul {
+    list-style: none;
+    margin-left: 0;
+}
+
+.arch-component li {
+    padding: var(--space-xs) 0;
+    color: var(--text-secondary);
+}
+
+.arch-component li::before {
+    content: "▸ ";
+    color: var(--accent-primary);
+    font-weight: bold;
+}
+
+/* ============================================
+   MULTIHEAD DIAGRAM
+   ============================================ */
+
+.multihead-diagram {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+}
+
+.diagram-layer {
+    margin-bottom: var(--space-lg);
+}
+
+.layer-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--space-sm);
+}
+
+.input-box,
+.output-box {
+    padding: var(--space-md);
+    background: var(--gradient-primary);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-weight: 600;
+}
+
+.heads-container {
+    display: flex;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.head-box,
+.attention-box {
+    flex: 1;
+    min-width: 80px;
+    padding: var(--space-sm);
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+.formula-mini {
+    font-family: var(--font-code);
+    font-size: 1rem;
+    color: var(--accent-primary);
+    margin-top: var(--space-sm);
+}
+
+/* ============================================
+   POSITIONAL ENCODING
+   ============================================ */
+
+.problem-solution {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.problem-box {
+    padding: var(--space-lg);
+    background: rgba(239, 68, 68, 0.1);
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.solution-box {
+    padding: var(--space-lg);
+    background: rgba(16, 185, 129, 0.1);
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.pe-visualization {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.pe-controls {
+    margin-top: var(--space-md);
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pe-controls label {
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.pe-controls input[type="range"] {
+    width: 200px;
+}
+
+.addition-visual {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+}
+
+.addition-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.addition-item {
+    text-align: center;
+}
+
+.item-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: var(--space-xs);
+}
+
+.vector-viz {
+    font-family: var(--font-code);
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+.plus-sign,
+.equals-sign {
+    font-size: 2rem;
+    color: var(--accent-primary);
+    font-weight: bold;
+}
+
+/* ============================================
+   MODEL SIZES TABLE
+   ============================================ */
+
+.model-sizes {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-md) 0;
+}
+
+.model-sizes th,
+.model-sizes td {
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.model-sizes th {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.model-sizes td {
+    color: var(--text-secondary);
+}
+
+.model-sizes .highlight-row {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.model-sizes .highlight-row td {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* ============================================
+   USE CASES
+   ============================================ */
+
+.usecase-demo {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+}
+
+.translation-demo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.demo-input,
+.demo-output {
+    flex: 1;
+    min-width: 200px;
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+}
+
+.demo-arrow {
+    font-size: 2rem;
+    color: var(--accent-primary);
+}
+
+.demo-text {
+    font-size: 1.125rem;
+    color: var(--text-primary);
+    font-style: italic;
+}
+
+.masked-sentence {
+    font-size: 1.25rem;
+    margin: var(--space-sm) 0;
+}
+
+.mask {
+    background: var(--gradient-primary);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.prediction {
+    font-size: 1rem;
+    color: var(--accent-primary);
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-sm);
+}
+
+.app-item {
+    padding: var(--space-sm);
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+}
+
+.completion-box {
+    background: var(--gradient-primary);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.completion-box h4 {
+    font-size: 1.5rem;
+    margin: var(--space-md) 0;
+    color: white;
+}
+
+.completion-box ul {
+    list-style: none;
+    margin: var(--space-md) 0;
+    text-align: left;
+}
+
+.completion-box li {
+    padding: var(--space-xs) 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.next-steps {
+    margin-top: var(--space-lg);
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.next-steps a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.next-steps a:hover {
+    text-decoration: underline;
+}

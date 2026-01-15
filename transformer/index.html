@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tutorial interaktif tentang arsitektur Transformer - dari konsep dasar hingga implementasi">
+    <title>Tutorial Transformer - Belajar dari Dasar</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1 class="logo">🤖 Transformer</h1>
+            <p class="subtitle">Tutorial Interaktif</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <ul class="nav-menu" id="navMenu">
+            <li class="nav-item active" data-section="intro">
+                <span class="nav-number">01</span>
+                <span class="nav-title">Pengenalan</span>
+            </li>
+            <li class="nav-item" data-section="basics">
+                <span class="nav-number">02</span>
+                <span class="nav-title">Konsep Dasar</span>
+            </li>
+            <li class="nav-item" data-section="attention">
+                <span class="nav-number">03</span>
+                <span class="nav-title">Attention Mechanism</span>
+            </li>
+            <li class="nav-item" data-section="self-attention">
+                <span class="nav-number">04</span>
+                <span class="nav-title">Self-Attention</span>
+            </li>
+            <li class="nav-item" data-section="multi-head">
+                <span class="nav-number">05</span>
+                <span class="nav-title">Multi-Head Attention</span>
+            </li>
+            <li class="nav-item" data-section="positional">
+                <span class="nav-number">06</span>
+                <span class="nav-title">Positional Encoding</span>
+            </li>
+            <li class="nav-item" data-section="architecture">
+                <span class="nav-number">07</span>
+                <span class="nav-title">Arsitektur Lengkap</span>
+            </li>
+            <li class="nav-item" data-section="examples">
+                <span class="nav-number">08</span>
+                <span class="nav-title">Contoh Kasus</span>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Section 1: Introduction -->
+        <section class="tutorial-section active" id="intro">
+            <div class="section-header">
+                <h2 class="section-title">Pengenalan Transformer</h2>
+                <p class="section-subtitle">Revolusi dalam Natural Language Processing</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🎯 Mengapa Transformer Penting?</h3>
+                <p>Transformer adalah arsitektur neural network yang merevolusi dunia AI, terutama dalam pemrosesan bahasa alami (NLP). Model seperti <strong>GPT</strong>, <strong>BERT</strong>, dan <strong>ChatGPT</strong> semuanya dibangun di atas arsitektur Transformer.</p>
+                
+                <div class="highlight-box">
+                    <h4>Masalah yang Dipecahkan:</h4>
+                    <ul>
+                        <li>❌ RNN lambat karena harus memproses sequence secara berurutan</li>
+                        <li>❌ Sulit menangkap dependensi jarak jauh dalam kalimat panjang</li>
+                        <li>✅ Transformer memproses semua token secara parallel</li>
+                        <li>✅ Attention mechanism memungkinkan setiap token "melihat" semua token lain</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>📚 Apa yang Akan Anda Pelajari?</h3>
+                <div class="learning-grid">
+                    <div class="learning-item">
+                        <div class="icon">🔤</div>
+                        <h4>Konsep Dasar</h4>
+                        <p>Tokens, embeddings, dan representasi sequence</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">👁️</div>
+                        <h4>Attention Mechanism</h4>
+                        <p>Bagaimana model "memperhatikan" bagian penting</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">🧮</div>
+                        <h4>Matematika</h4>
+                        <p>Query, Key, Value, dan perhitungan attention</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">🏗️</div>
+                        <h4>Arsitektur</h4>
+                        <p>Encoder-Decoder, Multi-Head Attention</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🎨 Analogi Sederhana</h3>
+                <div class="analogy-box">
+                    <p class="analogy-text">
+                        Bayangkan Anda membaca kalimat: <em>"Kucing itu mengejar <strong>ekor</strong>nya"</em>
+                    </p>
+                    <p class="analogy-text">
+                        Untuk memahami kata <strong>"ekor"</strong>, Anda perlu melihat kata <strong>"kucing"</strong> dan <strong>"nya"</strong>. 
+                        Transformer melakukan hal yang sama - setiap kata bisa "memperhatikan" kata-kata lain yang relevan!
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-next" data-next="basics">Mulai Belajar →</button>
+            </div>
+        </section>
+
+        <!-- Section 2: Basic Concepts -->
+        <section class="tutorial-section" id="basics">
+            <div class="section-header">
+                <h2 class="section-title">Konsep Dasar</h2>
+                <p class="section-subtitle">Memahami tokens, embeddings, dan sequences</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🔤 Tokenization: Memecah Teks</h3>
+                <p>Langkah pertama dalam memproses teks adalah mengubahnya menjadi <strong>tokens</strong> (unit-unit kecil).</p>
+                
+                <div class="demo-box">
+                    <div class="example-text">Kalimat: "Saya belajar Transformer"</div>
+                    <div class="tokenization-demo">
+                        <span class="token">Saya</span>
+                        <span class="token">belajar</span>
+                        <span class="token">Transformer</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🔢 Word Embeddings: Angka untuk Kata</h3>
+                <p>Komputer tidak mengerti kata-kata. Kita perlu mengubah setiap token menjadi <strong>vektor angka</strong> (embedding).</p>
+                
+                <div class="embedding-visual" id="embeddingVisual">
+                    <div class="embedding-example">
+                        <div class="word">"Saya"</div>
+                        <div class="arrow">→</div>
+                        <div class="vector">[0.2, -0.5, 0.8, 0.1, ...]</div>
+                    </div>
+                    <p class="note">Biasanya memiliki dimensi 512 atau 768</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>📊 Sequence Representation</h3>
+                <p>Seluruh kalimat direpresentasikan sebagai <strong>matrix</strong> di mana setiap baris adalah embedding dari satu token.</p>
+                
+                <div class="matrix-visual">
+                    <table class="matrix-table">
+                        <tr>
+                            <td class="matrix-label">Saya</td>
+                            <td class="matrix-cell">[0.2, -0.5, 0.8, ...]</td>
+                        </tr>
+                        <tr>
+                            <td class="matrix-label">belajar</td>
+                            <td class="matrix-cell">[0.1, 0.3, -0.2, ...]</td>
+                        </tr>
+                        <tr>
+                            <td class="matrix-label">Transformer</td>
+                            <td class="matrix-cell">[-0.4, 0.7, 0.5, ...]</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="intro">← Kembali</button>
+                <button class="btn-next" data-next="attention">Lanjut ke Attention →</button>
+            </div>
+        </section>
+
+        <!-- Section 3: Attention Mechanism -->
+        <section class="tutorial-section" id="attention">
+            <div class="section-header">
+                <h2 class="section-title">Attention Mechanism</h2>
+                <p class="section-subtitle">Inti dari arsitektur Transformer</p>
+            </div>
+
+            <div class="content-card">
+                <h3>💡 Konsep Attention</h3>
+                <p>Attention memungkinkan model untuk <strong>fokus pada bagian penting</strong> dari input ketika memproses setiap token.</p>
+                
+                <div class="analogy-box">
+                    <h4>Analogi: Mencari di Perpustakaan</h4>
+                    <p>Bayangkan Anda mencari informasi tentang "Python programming":</p>
+                    <ul>
+                        <li><strong>Query:</strong> Pertanyaan Anda ("Python programming")</li>
+                        <li><strong>Keys:</strong> Judul-judul buku di perpustakaan</li>
+                        <li><strong>Values:</strong> Isi dari buku-buku tersebut</li>
+                    </ul>
+                    <p>Attention mencocokkan Query dengan Keys untuk menemukan Values yang relevan!</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🔑 Query, Key, Value (QKV)</h3>
+                <p>Setiap token embedding ditransformasi menjadi 3 representasi berbeda:</p>
+                
+                <div class="qkv-grid">
+                    <div class="qkv-card query-card">
+                        <h4>Query (Q)</h4>
+                        <p>"Apa yang saya cari?"</p>
+                        <div class="formula">Q = X × W<sub>Q</sub></div>
+                    </div>
+                    <div class="qkv-card key-card">
+                        <h4>Key (K)</h4>
+                        <p>"Apa yang saya tawarkan?"</p>
+                        <div class="formula">K = X × W<sub>K</sub></div>
+                    </div>
+                    <div class="qkv-card value-card">
+                        <h4>Value (V)</h4>
+                        <p>"Informasi yang akan diberikan"</p>
+                        <div class="formula">V = X × W<sub>V</sub></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🧮 Perhitungan Attention</h3>
+                <p>Attention Score dihitung dengan 4 langkah:</p>
+                
+                <div class="calculation-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Dot Product</h4>
+                            <p>Score = Q × K<sup>T</sup></p>
+                            <p class="note">Mencocokkan seberapa relevan setiap token</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Scaling</h4>
+                            <p>Score = Score / √d<sub>k</sub></p>
+                            <p class="note">Normalisasi untuk stabilitas</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Softmax</h4>
+                            <p>Weights = softmax(Score)</p>
+                            <p class="note">Mengubah ke probabilitas (0-1)</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Weighted Sum</h4>
+                            <p>Output = Weights × V</p>
+                            <p class="note">Menggabungkan informasi yang relevan</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <h4>Formula Lengkap:</h4>
+                    <div class="main-formula">
+                        Attention(Q, K, V) = softmax(QK<sup>T</sup> / √d<sub>k</sub>) V
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🎬 Visualisasi Interaktif</h3>
+                <div class="animation-container" id="attentionAnimation">
+                    <canvas id="attentionCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playAttention">▶ Play Animation</button>
+                        <button class="btn-control" id="resetAttention">↻ Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="basics">← Kembali</button>
+                <button class="btn-next" data-next="self-attention">Lanjut ke Self-Attention →</button>
+            </div>
+        </section>
+
+        <!-- Section 4: Self-Attention -->
+        <section class="tutorial-section" id="self-attention">
+            <div class="section-header">
+                <h2 class="section-title">Self-Attention</h2>
+                <p class="section-subtitle">Token memperhatikan token lain dalam sequence yang sama</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🔄 Apa itu Self-Attention?</h3>
+                <p><strong>Self-Attention</strong> adalah attention di mana Query, Key, dan Value semuanya berasal dari input yang sama (sequence itu sendiri).</p>
+                
+                <div class="comparison-box">
+                    <div class="comparison-item">
+                        <h4>Standard Attention</h4>
+                        <p>Q dari satu sequence, K & V dari sequence lain</p>
+                        <p class="example">(misalnya: dalam translation)</p>
+                    </div>
+                    <div class="comparison-item highlight">
+                        <h4>Self-Attention ⭐</h4>
+                        <p>Q, K, V semuanya dari sequence yang sama</p>
+                        <p class="example">(token "berbicara" dengan token lain)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>📖 Contoh Konkret</h3>
+                <p>Kalimat: <strong>"Kucing itu makan ikan di dapur"</strong></p>
+                
+                <div class="example-sentence">
+                    <div class="word-box" data-word="kucing">Kucing</div>
+                    <div class="word-box" data-word="itu">itu</div>
+                    <div class="word-box" data-word="makan">makan</div>
+                    <div class="word-box" data-word="ikan">ikan</div>
+                    <div class="word-box" data-word="di">di</div>
+                    <div class="word-box" data-word="dapur">dapur</div>
+                </div>
+                
+                <div class="attention-explanation">
+                    <p>Ketika memproses kata <strong>"itu"</strong>:</p>
+                    <ul>
+                        <li>Perhatian tinggi ke → <span class="highlight-word">"Kucing"</span> (merujuk pada kucing)</li>
+                        <li>Perhatian rendah ke → "makan", "ikan", "di", "dapur"</li>
+                    </ul>
+                </div>
+                
+                <div class="interactive-demo" id="selfAttentionDemo">
+                    <h4>Demo Interaktif:</h4>
+                    <p>Klik pada kata untuk melihat attention weights:</p>
+                    <div id="attentionHeatmap"></div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🎯 Mengapa Self-Attention Powerful?</h3>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">⚡</div>
+                        <h4>Parallelization</h4>
+                        <p>Semua token diproses bersamaan, tidak sequential seperti RNN</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🔗</div>
+                        <h4>Long-range Dependencies</h4>
+                        <p>Bisa menangkap hubungan antar kata yang berjauhan</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🎯</div>
+                        <h4>Context-Aware</h4>
+                        <p>Representasi setiap kata disesuaikan dengan konteksnya</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="attention">← Kembali</button>
+                <button class="btn-next" data-next="multi-head">Lanjut ke Multi-Head →</button>
+            </div>
+        </section>
+
+        <!-- Section 5: Multi-Head Attention -->
+        <section class="tutorial-section" id="multi-head">
+            <div class="section-header">
+                <h2 class="section-title">Multi-Head Attention</h2>
+                <p class="section-subtitle">Belajar dari multiple perspectives secara parallel</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🎭 Konsep Multi-Head</h3>
+                <p>Daripada satu attention, kita menggunakan <strong>multiple attention heads</strong> yang bekerja parallel, masing-masing fokus pada aspek berbeda.</p>
+                
+                <div class="analogy-box">
+                    <h4>Analogi: Tim Reviewer</h4>
+                    <p>Bayangkan membaca paper ilmiah dengan beberapa reviewer:</p>
+                    <ul>
+                        <li>👤 Reviewer 1: Fokus pada metodologi</li>
+                        <li>👤 Reviewer 2: Fokus pada eksperimen</li>
+                        <li>👤 Reviewer 3: Fokus pada kesimpulan</li>
+                    </ul>
+                    <p>Setiap head adalah seperti reviewer yang fokus pada aspek berbeda!</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🏗️ Arsitektur Multi-Head</h3>
+                <div class="multihead-diagram" id="multiheadDiagram">
+                    <div class="diagram-layer">
+                        <div class="layer-label">Input</div>
+                        <div class="input-box">Embeddings (d_model = 512)</div>
+                    </div>
+                    
+                    <div class="diagram-layer">
+                        <div class="layer-label">Split into Heads</div>
+                        <div class="heads-container">
+                            <div class="head-box">Head 1<br>(d_k = 64)</div>
+                            <div class="head-box">Head 2<br>(d_k = 64)</div>
+                            <div class="head-box">Head 3<br>(d_k = 64)</div>
+                            <div class="head-box">...</div>
+                            <div class="head-box">Head 8<br>(d_k = 64)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="diagram-layer">
+                        <div class="layer-label">Attention per Head</div>
+                        <div class="heads-container">
+                            <div class="attention-box">Attention</div>
+                            <div class="attention-box">Attention</div>
+                            <div class="attention-box">Attention</div>
+                            <div class="attention-box">...</div>
+                            <div class="attention-box">Attention</div>
+                        </div>
+                    </div>
+                    
+                    <div class="diagram-layer">
+                        <div class="layer-label">Concatenate & Project</div>
+                        <div class="output-box">Output (d_model = 512)</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <h4>Formula:</h4>
+                    <div class="formula-step">MultiHead(Q, K, V) = Concat(head₁, ..., head_h) W^O</div>
+                    <div class="formula-step">dimana head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🔢 Contoh Perhitungan</h3>
+                <div class="calculation-example">
+                    <p>Transformer base menggunakan:</p>
+                    <ul>
+                        <li>Number of heads (h) = <strong>8</strong></li>
+                        <li>Model dimension (d_model) = <strong>512</strong></li>
+                        <li>Dimension per head (d_k) = d_model / h = <strong>64</strong></li>
+                    </ul>
+                    
+                    <p>Setiap head bekerja dengan vektor kecil 64-dim, lalu hasil digabungkan kembali jadi 512-dim.</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🎬 Visualisasi Multi-Head</h3>
+                <div class="animation-container">
+                    <canvas id="multiheadCanvas" width="800" height="500"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playMultihead">▶ Play Animation</button>
+                        <select id="headSelector" class="head-selector">
+                            <option value="all">All Heads</option>
+                            <option value="0">Head 1</option>
+                            <option value="1">Head 2</option>
+                            <option value="2">Head 3</option>
+                            <option value="3">Head 4</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="self-attention">← Kembali</button>
+                <button class="btn-next" data-next="positional">Lanjut ke Positional Encoding →</button>
+            </div>
+        </section>
+
+        <!-- Section 6: Positional Encoding -->
+        <section class="tutorial-section" id="positional">
+            <div class="section-header">
+                <h2 class="section-title">Positional Encoding</h2>
+                <p class="section-subtitle">Memberikan informasi urutan pada model</p>
+            </div>
+
+            <div class="content-card">
+                <h3>❓ Mengapa Perlu Positional Encoding?</h3>
+                <p>Self-attention tidak peduli dengan <strong>urutan token</strong>. Kalimat "Kucing makan ikan" dan "Ikan makan kucing" akan menghasilkan attention yang sama!</p>
+                
+                <div class="problem-solution">
+                    <div class="problem-box">
+                        <h4>❌ Masalah</h4>
+                        <p>Tanpa positional info:</p>
+                        <p class="example">"Dog bites man" ≈ "Man bites dog"</p>
+                    </div>
+                    <div class="solution-box">
+                        <h4>✅ Solusi</h4>
+                        <p>Tambahkan positional encoding:</p>
+                        <p class="example">Setiap posisi punya signature unik</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🌊 Sine dan Cosine Functions</h3>
+                <p>Transformer menggunakan fungsi trigonometri untuk encoding posisi:</p>
+                
+                <div class="formula-box">
+                    <h4>Formula Positional Encoding:</h4>
+                    <div class="formula-step">PE<sub>(pos, 2i)</sub> = sin(pos / 10000<sup>2i/d_model</sup>)</div>
+                    <div class="formula-step">PE<sub>(pos, 2i+1)</sub> = cos(pos / 10000<sup>2i/d_model</sup>)</div>
+                    <p class="note">pos = posisi, i = dimensi</p>
+                </div>
+                
+                <div class="pe-explanation">
+                    <p><strong>Mengapa sine/cosine?</strong></p>
+                    <ul>
+                        <li>Menghasilkan pola unik untuk setiap posisi</li>
+                        <li>Model bisa belajar relative positions</li>
+                        <li>Generalisasi ke panjang sequence yang belum pernah dilihat</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🎨 Visualisasi Positional Encoding</h3>
+                <div class="pe-visualization">
+                    <canvas id="positionalCanvas" width="800" height="400"></canvas>
+                    <div class="pe-controls">
+                        <label>Position: <input type="range" id="posSlider" min="0" max="50" value="0"> <span id="posValue">0</span></label>
+                        <button class="btn-control" id="animatePositional">🎬 Animate</button>
+                    </div>
+                    <p class="note">Warna menunjukkan nilai encoding di berbagai dimensi</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>➕ Penambahan ke Embeddings</h3>
+                <p>Positional encoding ditambahkan langsung ke word embeddings:</p>
+                
+                <div class="addition-visual">
+                    <div class="addition-row">
+                        <div class="addition-item">
+                            <div class="item-label">Word Embedding</div>
+                            <div class="vector-viz">[0.2, -0.5, 0.8, ...]</div>
+                        </div>
+                        <div class="plus-sign">+</div>
+                        <div class="addition-item">
+                            <div class="item-label">Positional Encoding</div>
+                            <div class="vector-viz">[0.0, 0.1, -0.2, ...]</div>
+                        </div>
+                        <div class="equals-sign">=</div>
+                        <div class="addition-item">
+                            <div class="item-label">Final Embedding</div>
+                            <div class="vector-viz">[0.2, -0.4, 0.6, ...]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="multi-head">← Kembali</button>
+                <button class="btn-next" data-next="architecture">Lanjut ke Arsitektur →</button>
+            </div>
+        </section>
+
+        <!-- Section 7: Complete Architecture -->
+        <section class="tutorial-section" id="architecture">
+            <div class="section-header">
+                <h2 class="section-title">Arsitektur Transformer Lengkap</h2>
+                <p class="section-subtitle">Menyatukan semua komponen</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🏛️ Gambaran Umum</h3>
+                <p>Transformer terdiri dari dua bagian utama: <strong>Encoder</strong> dan <strong>Decoder</strong>.</p>
+                
+                <div class="architecture-overview">
+                    <div class="arch-component encoder-comp">
+                        <h4>📥 Encoder</h4>
+                        <p>Memproses input sequence</p>
+                        <ul>
+                            <li>Multi-Head Self-Attention</li>
+                            <li>Feed-Forward Network</li>
+                            <li>Layer Normalization</li>
+                            <li>Residual Connections</li>
+                        </ul>
+                    </div>
+                    <div class="arch-component decoder-comp">
+                        <h4>📤 Decoder</h4>
+                        <p>Menghasilkan output sequence</p>
+                        <ul>
+                            <li>Masked Self-Attention</li>
+                            <li>Encoder-Decoder Attention</li>
+                            <li>Feed-Forward Network</li>
+                            <li>Layer Normalization</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🔄 Flow Data</h3>
+                <div class="full-architecture-diagram">
+                    <canvas id="architectureCanvas" width="900" height="700"></canvas>
+                    <button class="btn-control" id="playArchitecture">▶ Animate Data Flow</button>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🧩 Komponen Tambahan</h3>
+                
+                <div class="component-details">
+                    <div class="detail-card">
+                        <h4>Feed-Forward Network</h4>
+                        <p>Dua linear transformations dengan ReLU:</p>
+                        <div class="formula-mini">FFN(x) = max(0, xW₁ + b₁)W₂ + b₂</div>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <h4>Layer Normalization</h4>
+                        <p>Normalisasi untuk stabilitas training:</p>
+                        <div class="formula-mini">LayerNorm(x) = γ(x - μ)/σ + β</div>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <h4>Residual Connections</h4>
+                        <p>Skip connections untuk gradient flow:</p>
+                        <div class="formula-mini">output = LayerNorm(x + Sublayer(x))</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>📊 Ukuran Model</h3>
+                <table class="model-sizes">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Layers</th>
+                            <th>d_model</th>
+                            <th>Heads</th>
+                            <th>Parameters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Base</td>
+                            <td>6</td>
+                            <td>512</td>
+                            <td>8</td>
+                            <td>65M</td>
+                        </tr>
+                        <tr>
+                            <td>Large</td>
+                            <td>12</td>
+                            <td>1024</td>
+                            <td>16</td>
+                            <td>340M</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td>GPT-3</td>
+                            <td>96</td>
+                            <td>12288</td>
+                            <td>96</td>
+                            <td>175B</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="positional">← Kembali</button>
+                <button class="btn-next" data-next="examples">Lihat Contoh Kasus →</button>
+            </div>
+        </section>
+
+        <!-- Section 8: Use Cases -->
+        <section class="tutorial-section" id="examples">
+            <div class="section-header">
+                <h2 class="section-title">Contoh Kasus Nyata</h2>
+                <p class="section-subtitle">Aplikasi Transformer dalam berbagai domain</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🌍 Neural Machine Translation</h3>
+                <p>Aplikasi pertama dan paling terkenal dari paper "Attention is All You Need"</p>
+                
+                <div class="usecase-demo translation-demo">
+                    <div class="demo-input">
+                        <h4>Input (English):</h4>
+                        <p class="demo-text">"The cat sat on the mat"</p>
+                    </div>
+                    <div class="demo-arrow">→</div>
+                    <div class="demo-output">
+                        <h4>Output (French):</h4>
+                        <p class="demo-text">"Le chat était assis sur le tapis"</p>
+                    </div>
+                </div>
+                
+                <div class="process-explanation">
+                    <p><strong>Cara Kerja:</strong></p>
+                    <ul>
+                        <li><strong>Encoder:</strong> Memproses kalimat English</li>
+                        <li><strong>Decoder:</strong> Generate kalimat French word-by-word</li>
+                        <li><strong>Attention:</strong> Decoder memperhatikan bagian relevan dari input</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🤖 BERT - Understanding Language</h3>
+                <p><strong>B</strong>idirectional <strong>E</strong>ncoder <strong>R</strong>epresentations from <strong>T</strong>ransformers</p>
+                
+                <div class="usecase-demo bert-demo">
+                    <div class="bert-task">
+                        <h4>Masked Language Modeling:</h4>
+                        <p class="masked-sentence">Saya suka makan <span class="mask">[MASK]</span> goreng</p>
+                        <p class="prediction">Prediksi: <strong>nasi</strong> (99%), pisang (0.5%)</p>
+                    </div>
+                </div>
+                
+                <div class="bert-applications">
+                    <h4>Aplikasi BERT:</h4>
+                    <div class="app-grid">
+                        <div class="app-item">✓ Question Answering</div>
+                        <div class="app-item">✓ Sentiment Analysis</div>
+                        <div class="app-item">✓ Named Entity Recognition</div>
+                        <div class="app-item">✓ Text Classification</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>✍️ GPT - Text Generation</h3>
+                <p><strong>G</strong>enerative <strong>P</strong>re-trained <strong>T</strong>ransformer</p>
+                
+                <div class="usecase-demo gpt-demo">
+                    <div class="gpt-task">
+                        <h4>Autoregressive Generation:</h4>
+                        <p class="prompt">Prompt: <em>"Artificial intelligence is"</em></p>
+                        <p class="generation">Generated: <em>"Artificial intelligence is transforming how we live and work. From virtual assistants to autonomous vehicles..."</em></p>
+                    </div>
+                </div>
+                
+                <div class="gpt-features">
+                    <h4>Keunggulan GPT:</h4>
+                    <ul>
+                        <li>🎯 Zero-shot & Few-shot learning</li>
+                        <li>💬 Conversational AI (ChatGPT)</li>
+                        <li>📝 Creative writing & Code generation</li>
+                        <li>🔄 Task adaptation tanpa fine-tuning</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🖼️ Vision Transformer (ViT)</h3>
+                <p>Transformer tidak hanya untuk teks! ViT menggunakan Transformer untuk image classification.</p>
+                
+                <div class="vit-explanation">
+                    <div class="vit-step">
+                        <div class="step-num">1</div>
+                        <p>Image dipecah jadi patches (16×16)</p>
+                    </div>
+                    <div class="vit-step">
+                        <div class="step-num">2</div>
+                        <p>Setiap patch di-flatten jadi vector</p>
+                    </div>
+                    <div class="vit-step">
+                        <div class="step-num">3</div>
+                        <p>Treat patches seperti tokens</p>
+                    </div>
+                    <div class="vit-step">
+                        <div class="step-num">4</div>
+                        <p>Transformer encoder memproses</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🎉 Selamat!</h3>
+                <div class="completion-box">
+                    <p>Anda telah menyelesaikan tutorial Transformer dari dasar!</p>
+                    <h4>Yang Telah Anda Pelajari:</h4>
+                    <ul>
+                        <li>✅ Konsep tokens dan embeddings</li>
+                        <li>✅ Attention mechanism (Query, Key, Value)</li>
+                        <li>✅ Self-Attention dan Multi-Head Attention</li>
+                        <li>✅ Positional Encoding</li>
+                        <li>✅ Arsitektur lengkap Encoder-Decoder</li>
+                        <li>✅ Aplikasi nyata: Translation, BERT, GPT, ViT</li>
+                    </ul>
+                    
+                    <div class="next-steps">
+                        <h4>Langkah Selanjutnya:</h4>
+                        <p>📚 Baca paper asli: <a href="https://arxiv.org/abs/1706.03762" target="_blank">"Attention is All You Need"</a></p>
+                        <p>💻 Implementasi: Coba coding Transformer dari scratch</p>
+                        <p>🧪 Eksperimen: Fine-tune BERT atau GPT untuk task Anda</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="architecture">← Kembali</button>
+                <button class="btn-restart" data-next="intro">🔄 Mulai dari Awal</button>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
