@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Tutorial interaktif tentang Tiny Recursive Model - memproses struktur tree dengan neural networks">
+    <title>Tutorial Tiny Recursive Model</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1 class="logo">🌳 Recursive Model</h1>
+            <p class="subtitle">Tutorial Interaktif</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <ul class="nav-menu" id="navMenu">
+            <li class="nav-item active" data-section="intro">
+                <span class="nav-number">01</span>
+                <span class="nav-title">Pengenalan</span>
+            </li>
+            <li class="nav-item" data-section="recursion">
+                <span class="nav-number">02</span>
+                <span class="nav-title">Konsep Rekursi</span>
+            </li>
+            <li class="nav-item" data-section="rnn-intro">
+                <span class="nav-number">03</span>
+                <span class="nav-title">Recursive NN</span>
+            </li>
+            <li class="nav-item" data-section="architecture">
+                <span class="nav-number">04</span>
+                <span class="nav-title">Arsitektur</span>
+            </li>
+            <li class="nav-item" data-section="forward">
+                <span class="nav-number">05</span>
+                <span class="nav-title">Forward Pass</span>
+            </li>
+            <li class="nav-item" data-section="training">
+                <span class="nav-number">06</span>
+                <span class="nav-title">Training</span>
+            </li>
+            <li class="nav-item" data-section="implementation">
+                <span class="nav-number">07</span>
+                <span class="nav-title">Implementasi</span>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Section 1: Introduction -->
+        <section class="tutorial-section active" id="intro">
+            <div class="section-header">
+                <h2 class="section-title">Tiny Recursive Model</h2>
+                <p class="section-subtitle">Neural Networks untuk Struktur Tree</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🌳 Apa itu Recursive Model?</h3>
+                <p><strong>Recursive Model</strong> adalah jenis neural network yang dirancang khusus untuk memproses
+                    data dengan <strong>struktur hierarkis</strong> atau tree.</p>
+
+                <div class="highlight-box">
+                    <h4>Kenapa Perlu Recursive Model?</h4>
+                    <ul>
+                        <li>✅ Bahasa alami memiliki struktur tree (parse trees)</li>
+                        <li>✅ Banyak data real-world berbentuk hierarki</li>
+                        <li>✅ Bisa menangkap komposisi makna</li>
+                        <li>✅ Berbagi parameter di semua node (efficient)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>📖 Contoh Sederhana</h3>
+                <p>Bayangkan kalimat: <strong>"not very good"</strong></p>
+
+                <div class="tree-example">
+                    <svg width="400" height="200" viewBox="0 0 400 200">
+                        <!-- Tree structure -->
+                        <line x1="200" y1="50" x2="100" y2="120" stroke="#00d4ff" stroke-width="2" />
+                        <line x1="200" y1="50" x2="300" y2="120" stroke="#00d4ff" stroke-width="2" />
+                        <line x1="300" y1="120" x2="250" y2="170" stroke="#00d4ff" stroke-width="2" />
+                        <line x1="300" y1="120" x2="350" y2="170" stroke="#00d4ff" stroke-width="2" />
+
+                        <!-- Root node -->
+                        <circle cx="200" cy="50" r="25" fill="#8b5cf6" stroke="#ffffff" stroke-width="2" />
+                        <text x="200" y="55" text-anchor="middle" fill="white" font-size="14"
+                            font-weight="600">NEG</text>
+
+                        <!-- Internal nodes -->
+                        <circle cx="100" cy="120" r="22" fill="#10b981" stroke="#ffffff" stroke-width="2" />
+                        <text x="100" y="125" text-anchor="middle" fill="white" font-size="12">not</text>
+
+                        <circle cx="300" cy="120" r="25" fill="#3b82f6" stroke="#ffffff" stroke-width="2" />
+                        <text x="300" y="125" text-anchor="middle" fill="white" font-size="14">POS</text>
+
+                        <!-- Leaf nodes -->
+                        <circle cx="250" cy="170" r="20" fill="#f59e0b" stroke="#ffffff" stroke-width="2" />
+                        <text x="250" y="175" text-anchor="middle" fill="white" font-size="11">very</text>
+
+                        <circle cx="350" cy="170" r="20" fill="#f59e0b" stroke="#ffffff" stroke-width="2" />
+                        <text x="350" y="175" text-anchor="middle" fill="white" font-size="11">good</text>
+                    </svg>
+                </div>
+
+                <p class="note">Model memproses dari leaves (kata) ke root, mengkombinasikan makna di setiap level</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🎯 Apa yang Akan Dipelajari?</h3>
+                <div class="learning-grid">
+                    <div class="learning-item">
+                        <div class="icon">🔄</div>
+                        <h4>Rekursi</h4>
+                        <p>Konsep recursion & tree traversal</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">🧠</div>
+                        <h4>Model</h4>
+                        <p>Arsitektur Tiny Recursive Model</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">⚡</div>
+                        <h4>Forward Pass</h4>
+                        <p>Bagaimana data mengalir dalam tree</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">📈</div>
+                        <h4>Training</h4>
+                        <p>Backpropagation through structure</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-next" data-next="recursion">Mulai Belajar →</button>
+            </div>
+        </section>
+
+        <!-- Section 2: Recursion Basics -->
+        <section class="tutorial-section" id="recursion">
+            <div class="section-header">
+                <h2 class="section-title">Konsep Rekursi</h2>
+                <p class="section-subtitle">Memahami recursion dan tree structures</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🔄 Apa itu Rekursi?</h3>
+                <p><strong>Rekursi</strong> adalah teknik di mana fungsi memanggil dirinya sendiri untuk menyelesaikan
+                    masalah yang lebih kecil.</p>
+
+                <div class="code-example">
+                    <h4>Contoh: Faktorial</h4>
+                    <pre><code class="language-python">def factorial(n):
+    # Base case
+    if n == 0 or n == 1:
+        return 1
+    
+    # Recursive case
+    return n * factorial(n - 1)
+
+# factorial(4) = 4 * factorial(3)
+#              = 4 * 3 * factorial(2)
+#              = 4 * 3 * 2 * factorial(1)
+#              = 4 * 3 * 2 * 1 = 24</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🌲 Tree Structures</h3>
+                <p>Tree adalah struktur data hierarkis dengan nodes dan edges:</p>
+
+                <div class="tree-concepts">
+                    <div class="concept-item">
+                        <h4>Root</h4>
+                        <p>Node paling atas (tidak punya parent)</p>
+                    </div>
+                    <div class="concept-item">
+                        <h4>Leaf</h4>
+                        <p>Node yang tidak punya children</p>
+                    </div>
+                    <div class="concept-item">
+                        <h4>Internal Node</h4>
+                        <p>Node yang punya children</p>
+                    </div>
+                </div>
+
+                <div class="tree-viz" id="basicTreeViz">
+                    <canvas id="basicTreeCanvas" width="600" height="300"></canvas>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>📊 Tree Traversal</h3>
+                <p>Ada beberapa cara traverse tree:</p>
+
+                <div class="traversal-types">
+                    <div class="traversal-card">
+                        <h4>Pre-order</h4>
+                        <p>Root → Left → Right</p>
+                        <code>[Root, L1, L2, R1, R2]</code>
+                    </div>
+                    <div class="traversal-card">
+                        <h4>Post-order ⭐</h4>
+                        <p>Left → Right → Root</p>
+                        <code>[L1, L2, R1, R2, Root]</code>
+                        <p class="note">Digunakan di Recursive Model!</p>
+                    </div>
+                    <div class="traversal-card">
+                        <h4>In-order</h4>
+                        <p>Left → Root → Right</p>
+                        <code>[L1, Root, L2, R1, R2]</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="intro">← Kembali</button>
+                <button class="btn-next" data-next="rnn-intro">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 3: Recursive Neural Networks -->
+        <section class="tutorial-section" id="rnn-intro">
+            <div class="section-header">
+                <h2 class="section-title">Recursive Neural Networks</h2>
+                <p class="section-subtitle">Neural networks yang memproses tree structures</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🧠 Dari Recursion ke Neural Networks</h3>
+                <p>Bagaimana jika kita terapkan neural network pada tree structure?</p>
+
+                <div class="analogy-box">
+                    <h4>Analogi:</h4>
+                    <p>Bayangkan setiap node dalam tree adalah sebuah <strong>mini neural network</strong> yang:</p>
+                    <ul>
+                        <li>Menerima input dari children-nya</li>
+                        <li>Memproses dengan weights & activation</li>
+                        <li>Menghasilkan output untuk parent-nya</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🏗️ Ide Dasar</h3>
+                <p>Recursive NN memproses tree dari <strong>bottom-up</strong> (leaves → root):</p>
+
+                <div class="step-diagram">
+                    <div class="step-box">
+                        <div class="step-num">1</div>
+                        <div class="step-desc">
+                            <h4>Leaves (Input)</h4>
+                            <p>Kata-kata diubah jadi vectors</p>
+                        </div>
+                    </div>
+                    <div class="arrow-right">→</div>
+                    <div class="step-box">
+                        <div class="step-num">2</div>
+                        <div class="step-desc">
+                            <h4>Internal Nodes</h4>
+                            <p>Combine children dengan NN</p>
+                        </div>
+                    </div>
+                    <div class="arrow-right">→</div>
+                    <div class="step-box">
+                        <div class="step-num">3</div>
+                        <div class="step-desc">
+                            <h4>Root (Output)</h4>
+                            <p>Representasi seluruh tree</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🔑 Key Insight: Parameter Sharing</h3>
+                <p>Semua internal nodes menggunakan <strong>weights yang sama</strong>:</p>
+
+                <div class="parameter-sharing-viz">
+                    <div class="shared-params">
+                        <h4>Shared Parameters:</h4>
+                        <div class="param-list">
+                            <div class="param-item">W (Weight matrix)</div>
+                            <div class="param-item">b (Bias vector)</div>
+                        </div>
+                    </div>
+                    <div class="benefit-list">
+                        <p><strong>Keuntungan:</strong></p>
+                        <ul>
+                            <li>✅ Lebih efisien (parameter sedikit)</li>
+                            <li>✅ Generalisasi lebih baik</li>
+                            <li>✅ Bisa handle tree dengan size berbeda</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="recursion">← Kembali</button>
+                <button class="btn-next" data-next="architecture">Lanjut ke Arsitektur →</button>
+            </div>
+        </section>
+
+        <!-- Section 4: Architecture -->
+        <section class="tutorial-section" id="architecture">
+            <div class="section-header">
+                <h2 class="section-title">Tiny Recursive Model</h2>
+                <p class="section-subtitle">Arsitektur model sederhana</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🏛 Arsitektur Sederhana</h3>
+                <p>Tiny Recursive Model menggunakan <strong>satu layer</strong> untuk combine children:</p>
+
+                <div class="formula-box">
+                    <h4>Formula Komputasi Node:</h4>
+                    <div class="main-formula">
+                        h<sub>parent</sub> = tanh(W · [h<sub>left</sub>; h<sub>right</sub>] + b)
+                    </div>
+                    <p class="note">Dimana [;] adalah concatenation</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🧮 Komponen Model</h3>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h4>Input Layer</h4>
+                        <p>Word embeddings untuk leaves</p>
+                        <div class="formula-mini">h<sub>leaf</sub> = E[word]</div>
+                    </div>
+                    <div class="component-card">
+                        <h4>Composition Function</h4>
+                        <p>Combine 2 children</p>
+                        <div class="formula-mini">f(h₁, h₂) = tanh(W[h₁;h₂] + b)</div>
+                    </div>
+                    <div class="component-card">
+                        <h4>Output Layer</h4>
+                        <p>Classification dari root</p>
+                        <div class="formula-mini">y = softmax(U·h<sub>root</sub>)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>📐 Dimensi</h3>
+                <p>Contoh untuk sentiment analysis (positive/negative):</p>
+
+                <table class="dimension-table">
+                    <tr>
+                        <th>Component</th>
+                        <th>Dimension</th>
+                        <th>Contoh</th>
+                    </tr>
+                    <tr>
+                        <td>Embedding (d)</td>
+                        <td>50</td>
+                        <td>Setiap kata → vector 50-dim</td>
+                    </tr>
+                    <tr>
+                        <td>Hidden (h)</td>
+                        <td>50</td>
+                        <td>Node representation 50-dim</td>
+                    </tr>
+                    <tr>
+                        <td>W matrix</td>
+                        <td>50 × 100</td>
+                        <td>Transform [h₁;h₂] (100-dim) → 50-dim</td>
+                    </tr>
+                    <tr>
+                        <td>Output classes</td>
+                        <td>2</td>
+                        <td>Positive / Negative</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-card">
+                <h3>🎨 Visualisasi Arsitektur</h3>
+                <div class="architecture-viz">
+                    <canvas id="architectureCanvas" width="700" height="400"></canvas>
+                    <button class="btn-control" id="playArchitecture">▶ Lihat Struktur</button>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="rnn-intro">← Kembali</button>
+                <button class="btn-next" data-next="forward">Lanjut ke Forward Pass →</button>
+            </div>
+        </section>
+
+        <!-- Section 5: Forward Pass -->
+        <section class="tutorial-section" id="forward">
+            <div class="section-header">
+                <h2 class="section-title">Forward Pass</h2>
+                <p class="section-subtitle">Bagaimana data mengalir dari leaves ke root</p>
+            </div>
+
+            <div class="content-card">
+                <h3>⚡ Proses Forward Pass</h3>
+                <p>Data mengalir <strong>bottom-up</strong> menggunakan post-order traversal:</p>
+
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <h4>Leaf Nodes</h4>
+                        <p>Lookup word embeddings</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <h4>Internal Nodes</h4>
+                        <p>Compute h = f(h_left, h_right)</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <h4>Root Node</h4>
+                        <p>Final classification</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🎬 Animasi Forward Pass</h3>
+                <p>Lihat bagaimana representasi dihitung step-by-step:</p>
+
+                <div class="forward-animation">
+                    <canvas id="forwardCanvas" width="800" height="500"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playForward">▶ Play Animation</button>
+                        <button class="btn-control" id="stepForward">➡ Step</button>
+                        <button class="btn-control" id="resetForward">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="forwardStatus"></div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>📊 Contoh Perhitungan</h3>
+                <p>Kalimat: <strong>"very good"</strong></p>
+
+                <div class="calculation-demo">
+                    <h4>Step 1: Leaf Embeddings</h4>
+                    <div class="calc-step">
+                        <code>h_very = E["very"] = [0.2, 0.5, -0.3, ...]</code><br>
+                        <code>h_good = E["good"] = [0.8, -0.1, 0.4, ...]</code>
+                    </div>
+
+                    <h4>Step 2: Internal Node</h4>
+                    <div class="calc-step">
+                        <code>concat = [h_very; h_good] = [0.2, 0.5, ..., 0.8, -0.1, ...]</code><br>
+                        <code>h_parent = tanh(W · concat + b)</code><br>
+                        <code>h_parent = [0.6, 0.3, -0.2, ...]</code>
+                    </div>
+
+                    <h4>Step 3: Classification</h4>
+                    <div class="calc-step">
+                        <code>y = softmax(U · h_parent)</code><br>
+                        <code>y = [0.85, 0.15] → "Positive" dengan 85% confidence</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="architecture">← Kembali</button>
+                <button class="btn-next" data-next="training">Lanjut ke Training →</button>
+            </div>
+        </section>
+
+        <!-- Section 6: Training -->
+        <section class="tutorial-section" id="training">
+            <div class="section-header">
+                <h2 class="section-title">Training Process</h2>
+                <p class="section-subtitle">Backpropagation Through Structure</p>
+            </div>
+
+            <div class="content-card">
+                <h3>📈 Bagaimana Training Bekerja?</h3>
+                <p>Training menggunakan <strong>Backpropagation Through Structure (BPTS)</strong>:</p>
+
+                <div class="training-overview">
+                    <div class="training-phase">
+                        <h4>Forward Pass</h4>
+                        <p>Compute representations bottom-up</p>
+                    </div>
+                    <div class="arrow-down">↓</div>
+                    <div class="training-phase">
+                        <h4>Loss Calculation</h4>
+                        <p>Compare prediction vs label</p>
+                    </div>
+                    <div class="arrow-down">↓</div>
+                    <div class="training-phase">
+                        <h4>Backward Pass</h4>
+                        <p>Gradient flows top-down</p>
+                    </div>
+                    <div class="arrow-down">↓</div>
+                    <div class="training-phase">
+                        <h4>Parameter Update</h4>
+                        <p>W, b, E updated dengan gradient</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🔙 Backpropagation Animation</h3>
+                <p>Lihat bagaimana gradient mengalir dari root ke leaves:</p>
+
+                <div class="backprop-animation">
+                    <canvas id="backpropCanvas" width="800" height="500"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playBackprop">▶ Play Backprop</button>
+                        <button class="btn-control" id="resetBackprop">↻ Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>⚙️ Training Loop</h3>
+                <div class="code-example">
+                    <pre><code class="language-python">for epoch in range(num_epochs):
+    total_loss = 0
+    
+    for tree, label in training_data:
+        # Forward pass
+        h_root = forward_pass(tree)
+        prediction = softmax(U @ h_root)
+        
+        # Compute loss
+        loss = cross_entropy(prediction, label)
+        total_loss += loss
+        
+        # Backward pass
+        gradients = backprop(tree, loss)
+        
+        # Update parameters
+        W -= learning_rate * gradients['W']
+        b -= learning_rate * gradients['b']
+        E -= learning_rate * gradients['E']
+    
+    print(f"Epoch {epoch}: Loss = {total_loss}")</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>📊 Training Progress Visualization</h3>
+                <div class="training-viz">
+                    <canvas id="trainingCanvas" width="700" height="350"></canvas>
+                    <div class="training-controls">
+                        <button class="btn-control" id="startTraining">🎓 Simulate Training</button>
+                        <button class="btn-control" id="stopTraining">⏸ Pause</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="forward">← Kembali</button>
+                <button class="btn-next" data-next="implementation">Lihat Implementasi →</button>
+            </div>
+        </section>
+
+        <!-- Section 7: Implementation -->
+        <section class="tutorial-section" id="implementation">
+            <div class="section-header">
+                <h2 class="section-title">Implementasi & Contoh</h2>
+                <p class="section-subtitle">Dari konsep ke code</p>
+            </div>
+
+            <div class="content-card">
+                <h3>💻 Implementasi PyTorch</h3>
+                <div class="code-example">
+                    <h4>Tiny Recursive Model Class:</h4>
+                    <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class TinyRecursiveModel(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim, num_classes):
+        super().__init__()
+        
+        # Word embeddings
+        self.embedding = nn.Embedding(vocab_size, embed_dim)
+        
+        # Composition function
+        self.W = nn.Linear(2 * hidden_dim, hidden_dim)
+        
+        # Output classifier
+        self.classifier = nn.Linear(hidden_dim, num_classes)
+        
+    def forward_node(self, node):
+        """Recursive forward pass"""
+        if node.is_leaf():
+            # Leaf: return word embedding
+            return self.embedding(node.word_id)
+        else:
+            # Internal: combine children
+            h_left = self.forward_node(node.left)
+            h_right = self.forward_node(node.right)
+            
+            # Concatenate and transform
+            h_concat = torch.cat([h_left, h_right], dim=0)
+            h_parent = torch.tanh(self.W(h_concat))
+            
+            return h_parent
+    
+    def forward(self, tree):
+        """Process entire tree"""
+        h_root = self.forward_node(tree.root)
+        logits = self.classifier(h_root)
+        return logits</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🌳 Use Cases</h3>
+                <div class="usecase-grid">
+                    <div class="usecase-card">
+                        <h4>Sentiment Analysis</h4>
+                        <p>Klasifikasi sentimen dari parse tree kalimat</p>
+                        <p class="example">"not very good" → Negative</p>
+                    </div>
+                    <div class="usecase-card">
+                        <h4>Semantic Composition</h4>
+                        <p>Memahami makna komposisional</p>
+                        <p class="example">"red car" vs "car that is red"</p>
+                    </div>
+                    <div class="usecase-card">
+                        <h4>Question Answering</h4>
+                        <p>Memproses struktur pertanyaan</p>
+                        <p class="example">Parse tree untuk complex questions</p>
+                    </div>
+                    <div class="usecase-card">
+                        <h4>Image Segmentation</h4>
+                        <p>Hierarchical scene parsing</p>
+                        <p class="example">Object decomposition trees</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🎯 Interactive Demo</h3>
+                <p>Build tree Anda sendiri dan lihat hasilnya:</p>
+
+                <div class="interactive-builder" id="treeBuilder">
+                    <div class="builder-controls">
+                        <h4>Build Your Tree:</h4>
+                        <div class="word-input">
+                            <input type="text" id="wordInput" placeholder="Enter words (comma-separated)"
+                                value="very, good">
+                            <button class="btn-control" id="buildTree">🌳 Build Tree</button>
+                        </div>
+                    </div>
+                    <div class="builder-canvas">
+                        <canvas id="builderCanvas" width="700" height="400"></canvas>
+                    </div>
+                    <div class="builder-result" id="builderResult"></div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🎉 Selamat!</h3>
+                <div class="completion-box">
+                    <p>Anda telah menyelesaikan tutorial Tiny Recursive Model!</p>
+                    <h4>Yang Telah Dipelajari:</h4>
+                    <ul>
+                        <li>✅ Konsep recursion dan tree structures</li>
+                        <li>✅ Recursive Neural Networks</li>
+                        <li>✅ Tiny Recursive Model architecture</li>
+                        <li>✅ Forward pass computation</li>
+                        <li>✅ Backpropagation through structure</li>
+                        <li>✅ Implementasi PyTorch</li>
+                    </ul>
+
+                    <div class="next-steps">
+                        <h4>Belajar Lebih Lanjut:</h4>
+                        <p>📚 Paper: "Recursive Deep Models for Semantic Compositionality"</p>
+                        <p>🔬 Advanced: TreeLSTM, Recursive Autoencoder</p>
+                        <p>💻 Practice: Implement on Stanford Sentiment Treebank</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" data-prev="training">← Kembali</button>
+                <button class="btn-restart" data-next="intro">🔄 Mulai dari Awal</button>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>

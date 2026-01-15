@@ -1,0 +1,579 @@
+/* ============================================
+   TINY RECURSIVE MODEL - COMPONENT STYLES
+   Tree visualizations and specific components
+   ============================================ */
+
+/* ============================================
+   TREE VISUALIZATION
+   ============================================ */
+
+.tree-example {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+}
+
+.tree-example svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.tree-viz {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+}
+
+.tree-viz canvas {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   TREE CONCEPTS
+   ============================================ */
+
+.tree-concepts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.concept-item {
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.concept-item h4 {
+    color: var(--accent-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.concept-item p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   TRAVERSAL TYPES
+   ============================================ */
+
+.traversal-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.traversal-card {
+    padding: var(--space-lg);
+    background: rgba(0, 212, 255, 0.05);
+    border: 2px solid rgba(0, 212, 255, 0.2);
+    border-radius: var(--radius-md);
+}
+
+.traversal-card h4 {
+    color: var(--accent-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.traversal-card p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.traversal-card code {
+    display: block;
+    font-family: var(--font-code);
+    background: rgba(0, 0, 0, 0.3);
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    margin-top: var(--space-xs);
+    color: var(--accent-secondary);
+}
+
+/* ============================================
+   STEP DIAGRAMS
+   ============================================ */
+
+.step-diagram {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: var(--space-md) 0;
+}
+
+.step-box {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid var(--color-internal);
+    border-radius: var(--radius-md);
+    flex: 1;
+    min-width: 200px;
+}
+
+.step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-desc h4 {
+    font-size: 1rem;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+}
+
+.step-desc p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.arrow-right {
+    font-size: 2rem;
+    color: var(--accent-primary);
+    font-weight: bold;
+}
+
+/* ============================================
+   PARAMETER SHARING
+   ============================================ */
+
+.parameter-sharing-viz {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    margin: var(--space-md) 0;
+}
+
+.shared-params {
+    padding: var(--space-md);
+    background: rgba(139, 92, 246, 0.1);
+    border: 2px solid var(--color-root);
+    border-radius: var(--radius-md);
+}
+
+.param-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-top: var(--space-sm);
+}
+
+.param-item {
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-code);
+    color: var(--accent-primary);
+}
+
+.benefit-list {
+    padding: var(--space-md);
+    background: rgba(16, 185, 129, 0.1);
+    border: 2px solid #10b981;
+    border-radius: var(--radius-md);
+}
+
+/* ============================================
+   COMPONENT GRID
+   ============================================ */
+
+.component-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.component-card {
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.component-card h4 {
+    font-size: 1.125rem;
+    margin-bottom: var(--space-sm);
+    color: var(--accent-primary);
+}
+
+.component-card p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-sm);
+}
+
+/* ============================================
+   DIMENSION TABLE
+   ============================================ */
+
+.dimension-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-md) 0;
+}
+
+.dimension-table th,
+.dimension-table td {
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dimension-table th {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.dimension-table td {
+    color: var(--text-secondary);
+}
+
+/* ============================================
+   ANIMATION CONTAINERS
+   ============================================ */
+
+.architecture-viz,
+.forward-animation,
+.backprop-animation,
+.training-viz {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: var(--radius-lg);
+    margin: var(--space-md) 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.architecture-viz canvas,
+.forward-animation canvas,
+.backprop-animation canvas,
+.training-viz canvas {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.2);
+    margin-bottom: var(--space-md);
+}
+
+.animation-controls,
+.training-controls {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.animation-status {
+    margin-top: var(--space-md);
+    padding: var(--space-sm);
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    color: var(--accent-primary);
+    font-weight: 500;
+}
+
+/* ============================================
+   PROCESS STEPS
+   ============================================ */
+
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.process-step {
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 4px solid var(--accent-primary);
+    border-radius: var(--radius-sm);
+}
+
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--gradient-secondary);
+    border-radius: 50%;
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+}
+
+.process-step h4 {
+    font-size: 1.125rem;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+}
+
+.process-step p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+}
+
+/* ============================================
+   CALCULATION DEMO
+   ============================================ */
+
+.calculation-demo {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+}
+
+.calculation-demo h4 {
+    color: var(--accent-primary);
+    margin: var(--space-md) 0 var(--space-sm) 0;
+}
+
+.calc-step {
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.calc-step code {
+    display: block;
+    font-family: var(--font-code);
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+/* ============================================
+   TRAINING OVERVIEW
+   ============================================ */
+
+.training-overview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: var(--space-md) 0;
+}
+
+.training-phase {
+    width: 100%;
+    max-width: 400px;
+    padding: var(--space-md);
+    background: rgba(139, 92, 246, 0.1);
+    border: 2px solid var(--color-root);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.training-phase h4 {
+    color: var(--accent-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.training-phase p {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+}
+
+.arrow-down {
+    font-size: 2rem;
+    color: var(--accent-primary);
+    font-weight: bold;
+}
+
+/* ============================================
+   USE CASES
+   ============================================ */
+
+.usecase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.usecase-card {
+    padding: var(--space-lg);
+    background: rgba(16, 185, 129, 0.05);
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.usecase-card h4 {
+    color: #10b981;
+    margin-bottom: var(--space-sm);
+}
+
+.usecase-card p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.usecase-card .example {
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   INTERACTIVE BU ILDER
+   ============================================ */
+
+.interactive-builder {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+}
+
+.builder-controls {
+    margin-bottom: var(--space-md);
+}
+
+.builder-controls h4 {
+    color: var(--accent-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.word-input {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.word-input input {
+    flex: 1;
+    min-width: 250px;
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 1rem;
+}
+
+.word-input input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+.builder-canvas {
+    margin: var(--space-md) 0;
+}
+
+.builder-canvas canvas {
+    width: 100%;
+    height: auto;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-sm);
+}
+
+.builder-result {
+    padding: var(--space-md);
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    min-height: 60px;
+}
+
+/* ============================================
+   COMPLETION BOX
+   ============================================ */
+
+.completion-box {
+    background: var(--gradient-primary);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.completion-box h4 {
+    font-size: 1.5rem;
+    margin: var(--space-md) 0;
+    color: white;
+}
+
+.completion-box ul {
+    list-style: none;
+    margin: var(--space-md) 0;
+    text-align: left;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.completion-box li {
+    padding: var(--space-xs) 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.next-steps {
+    margin-top: var(--space-lg);
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.next-steps h4 {
+    color: white;
+}
+
+.next-steps p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: var(--space-xs) 0;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+    .parameter-sharing-viz {
+        grid-template-columns: 1fr;
+    }
+
+    .step-diagram {
+        flex-direction: column;
+    }
+
+    .arrow-right {
+        transform: rotate(90deg);
+    }
+
+    .word-input {
+        flex-direction: column;
+    }
+
+    .word-input input {
+        min-width: 100%;
+    }
+}

@@ -1,0 +1,273 @@
+/* ============================================
+   TINY RECURSIVE MODEL - ANIMATIONS
+   Keyframes and animation effects
+   ============================================ */
+
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+    }
+}
+
+@keyframes nodeHighlight {
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+        filter: brightness(1.3);
+    }
+}
+
+@keyframes dataFlow {
+    from {
+        stroke-dashoffset: 1000;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ============================================
+   NODE ANIMATIONS
+   ============================================ */
+
+.node-active {
+    animation: nodeHighlight 1s ease-in-out infinite;
+}
+
+.node-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.node-glow {
+    animation: glow 1.5s ease-in-out infinite;
+}
+
+/* ============================================
+   EDGE/CONNECTION ANIMATIONS
+   ============================================ */
+
+.edge-animated {
+    stroke-dasharray: 5, 5;
+    animation: dataFlow 2s linear infinite;
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 3px solid var(--accent-primary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: rotate 1s linear infinite;
+}
+
+/* ============================================
+   TREE TRAVERSAL ANIMATION
+   ============================================ */
+
+@keyframes traverseHighlight {
+    0% {
+        opacity: 0.3;
+        transform: scale(0.95);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    100% {
+        opacity: 0.3;
+        transform: scale(0.95);
+    }
+}
+
+.node-visited {
+    animation: traverseHighlight 0.8s ease-in-out;
+}
+
+/* ============================================
+   GRADIENT FLOW
+   ============================================ */
+
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    50% {
+        background-position: 100% 100%;
+    }
+
+    100% {
+        background-position: 0% 0%;
+    }
+}
+
+.gradient-animated {
+    background: linear-gradient(45deg,
+            #667eea,
+            #764ba2,
+            #f093fb,
+            #4facfe);
+    background-size: 400% 400%;
+    animation: gradientFlow 5s ease infinite;
+}
+
+/* ============================================
+   PARAMETER UPDATE ANIMATION
+   ============================================ */
+
+@keyframes parameterUpdate {
+    0% {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    50% {
+        background: rgba(0, 212, 255, 0.3);
+    }
+
+    100% {
+        background: rgba(255, 255, 255, 0.05);
+    }
+}
+
+.param-updating {
+    animation: parameterUpdate 1s ease-in-out;
+}
+
+/* ============================================
+   SCROLL ANIMATIONS
+   ============================================ */
+
+.scroll-fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================
+   BUTTON EFFECTS
+   ============================================ */
+
+.btn-click-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-click-effect::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-click-effect:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* ============================================
+   RESPONSIVE MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
