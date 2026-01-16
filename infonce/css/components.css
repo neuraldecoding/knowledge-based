@@ -1,0 +1,422 @@
+/* ============================================
+   InfoNCE TUTORIAL - COMPONENT STYLES
+   Contrastive learning visualizations
+   ============================================ */
+
+/* ============================================
+   LEARNING GRID
+   ============================================ */
+
+.learning-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.learning-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.learning-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-4px);
+}
+
+.learning-item .icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-sm);
+}
+
+.learning-item h4 {
+    font-size: 1.125rem;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+}
+
+.learning-item p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* ============================================
+   POSITIVE/NEGATIVE BOXES
+   ============================================ */
+
+.dual-force {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.positive-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.1) 100%);
+    border: 2px solid var(--color-positive);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+}
+
+.negative-box {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(248, 113, 113, 0.1) 100%);
+    border: 2px solid var(--color-negative);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+}
+
+.force-title {
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+}
+
+.positive-box .force-title {
+    color: var(--color-positive);
+}
+
+.negative-box .force-title {
+    color: var(--color-negative);
+}
+
+/* ============================================
+   FORMULA BOX
+   ============================================ */
+
+.formula-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+    text-align: center;
+}
+
+.main-formula {
+    font-family: var(--font-code);
+    font-size: 1.5rem;
+    color: var(--accent-primary);
+    margin: var(--space-sm) 0;
+}
+
+.formula-step {
+    font-family: var(--font-code);
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    margin: var(--space-xs) 0;
+}
+
+.formula-note {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: var(--space-xs);
+}
+
+/* ============================================
+   HIGHLIGHT BOXES
+   ============================================ */
+
+.highlight-box {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-left: 4px solid var(--accent-primary);
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+    margin: var(--space-md) 0;
+}
+
+.positive-highlight {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.1) 100%);
+    border-left: 4px solid var(--color-positive);
+}
+
+.negative-highlight {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(248, 113, 113, 0.1) 100%);
+    border-left: 4px solid var(--color-negative);
+}
+
+/* ============================================
+   VISUALIZATIONS
+   ============================================ */
+
+.contrastive-viz,
+.temperature-viz,
+.symmetric-viz,
+.embedding-viz {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: var(--radius-lg);
+    margin: var(--space-md) 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contrastive-viz canvas,
+.temperature-viz canvas,
+.symmetric-viz canvas,
+.embedding-viz canvas {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.2);
+    margin-bottom: var(--space-md);
+}
+
+.animation-controls {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.animation-status {
+    margin-top: var(--space-md);
+    padding: var(--space-sm);
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    color: var(--accent-primary);
+    font-weight: 500;
+}
+
+/* ============================================
+   TEMPERATURE SLIDER
+   ============================================ */
+
+.temperature-control {
+    margin: var(--space-md) 0;
+    padding: var(--space-lg);
+    background: rgba(245, 158, 11, 0.1);
+    border: 2px solid var(--color-temperature);
+    border-radius: var(--radius-md);
+}
+
+.temperature-label {
+    font-weight: 600;
+    color: var(--color-temperature);
+    margin-bottom: var(--space-sm);
+    text-align: center;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.temp-slider {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    outline: none;
+    appearance: none;
+}
+
+.temp-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--color-temperature);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.temp-value {
+    font-family: var(--font-code);
+    font-size: 1.25rem;
+    color: var(--color-temperature);
+    min-width: 80px;
+    text-align: center;
+}
+
+/* ============================================
+   SIMILARITY MATRIX
+   ============================================ */
+
+.matrix-container {
+    display: flex;
+    justify-content: center;
+    margin: var(--space-md) 0;
+}
+
+.matrix-grid {
+    display: grid;
+    gap: 2px;
+    padding: var(--space-sm);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-sm);
+}
+
+.matrix-cell {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    font-family: var(--font-code);
+}
+
+.matrix-cell:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.matrix-cell.positive {
+    background: var(--color-positive);
+    color: white;
+    font-weight: 700;
+}
+
+.matrix-cell.negative {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-muted);
+}
+
+/* ============================================
+   CODE BLOCKS
+   ============================================ */
+
+.code-block {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin: var(--space-md) 0;
+    overflow-x: auto;
+}
+
+.code-block pre {
+    font-family: var(--font-code);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.code-block code {
+    font-family: var(--font-code);
+}
+
+/* ============================================
+   COMPARISON TABLE
+   ============================================ */
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-md) 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comparison-table th {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.comparison-table td {
+    color: var(--text-secondary);
+}
+
+.comparison-table .highlight {
+    color: var(--color-positive);
+    font-weight: 600;
+}
+
+/* ============================================
+   APPLICATION CARDS
+   ============================================ */
+
+.application-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.application-card {
+    padding: var(--space-lg);
+    background: rgba(59, 130, 246, 0.05);
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.application-card h4 {
+    color: var(--color-similarity);
+    margin-bottom: var(--space-sm);
+}
+
+.application-card p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.application-card .example {
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   COMPLETION BOX
+   ============================================ */
+
+.completion-box {
+    background: var(--gradient-primary);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.completion-box h4 {
+    font-size: 1.5rem;
+    margin: var(--space-md) 0;
+    color: white;
+}
+
+.completion-box ul {
+    list-style: none;
+    margin: var(--space-md) 0;
+    text-align: left;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.completion-box li {
+    padding: var(--space-xs) 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+    .dual-force {
+        grid-template-columns: 1fr;
+    }
+
+    .learning-grid,
+    .application-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .matrix-cell {
+        width: 40px;
+        height: 40px;
+        font-size: 0.75rem;
+    }
+}

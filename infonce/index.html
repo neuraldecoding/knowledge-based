@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial InfoNCE - Noise Contrastive Estimation</title>
+    <meta name="description" content="Tutorial interaktif tentang InfoNCE loss untuk contrastive learning">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="logo">🔥 InfoNCE</h1>
+            <p class="subtitle">Contrastive Learning</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" data-section="intro">
+                <span class="nav-number">01</span>
+                <span class="nav-title">Pengenalan</span>
+            </li>
+            <li class="nav-item" data-section="math">
+                <span class="nav-number">02</span>
+                <span class="nav-title">Mathematical Foundation</span>
+            </li>
+            <li class="nav-item" data-section="mechanics">
+                <span class="nav-number">03</span>
+                <span class="nav-title">Contrastive Mechanics</span>
+            </li>
+            <li class="nav-item" data-section="temperature">
+                <span class="nav-number">04</span>
+                <span class="nav-title">Temperature Parameter</span>
+            </li>
+            <li class="nav-item" data-section="symmetric">
+                <span class="nav-number">05</span>
+                <span class="nav-title">Symmetric Loss</span>
+            </li>
+            <li class="nav-item" data-section="implementation">
+                <span class="nav-number">06</span>
+                <span class="nav-title">Implementation</span>
+            </li>
+            <li class="nav-item" data-section="applications">
+                <span class="nav-number">07</span>
+                <span class="nav-title">Applications</span>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Section 1: Pengenalan -->
+        <section id="intro" class="tutorial-section active">
+            <header class="section-header">
+                <h2 class="section-title">InfoNCE</h2>
+                <p class="section-subtitle">Noise Contrastive Estimation</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🔥 Apa itu InfoNCE?</h3>
+                <p>
+                    <strong>InfoNCE (Info Noise Contrastive Estimation)</strong> adalah loss function untuk
+                    <strong>contrastive learning</strong> yang memaksimalkan mutual information antara
+                    positive pairs sambil meminimalkan similarity dengan negative samples.
+                </p>
+                <div class="highlight-box">
+                    <p><strong>Core Idea:</strong></p>
+                    <p>
+                        Pull <span style="color: var(--color-positive); font-weight: 700;">positive pairs</span> closer
+                        together,<br>
+                        Push <span style="color: var(--color-negative); font-weight: 700;">negative pairs</span> farther
+                        apart!
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📜 History</h4>
+                <p>InfoNCE diperkenalkan dalam berbagai influential papers:</p>
+                <ul>
+                    <li>📊 <strong>CPC (2018)</strong>: Contrastive Predictive Coding - prediktif representasi</li>
+                    <li>🎨 <strong>MoCo (2019)</strong>: Momentum Contrast - self-supervised vision</li>
+                    <li>🖼️ <strong>SimCLR (2020)</strong>: Simple framework for contrastive learning</li>
+                    <li>🌐 <strong>CLIP (2021)</strong>: Vision-language alignment dengan InfoNCE</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Mengapa InfoNCE Powerful?</h4>
+                <div class="dual-force">
+                    <div class="positive-box">
+                        <div class="force-title">✅ Positive Pairs</div>
+                        <p>Anchor & positive sample harus punya similarity <strong>tinggi</strong></p>
+                        <p><small>Example: dua augmentasi dari image yang sama</small></p>
+                    </div>
+                    <div class="negative-box">
+                        <div class="force-title">❌ Negative Pairs</div>
+                        <p>Anchor & negative samples harus punya similarity <strong>rendah</strong></p>
+                        <p><small>Example: images dari classes berbeda</small></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎯 Yang Akan Dipelajari</h4>
+                <div class="learning-grid">
+                    <div class="learning-item">
+                        <div class="icon">📐</div>
+                        <h4>Mathematical Foundation</h4>
+                        <p>InfoNCE derivation</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">⚙️</div>
+                        <h4>Contrastive Mechanics</h4>
+                        <p>Pull/push forces</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">🌡️</div>
+                        <h4>Temperature τ</h4>
+                        <p>Controlling sharpness</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">💻</div>
+                        <h4>PyTorch Code</h4>
+                        <p>Implementation</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-next" onclick="navigateToSection('math')">Mulai Belajar →</button>
+            </div>
+        </section>
+
+        <!-- Section 2: Mathematical Foundation -->
+        <section id="math" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Mathematical Foundation</h2>
+                <p class="section-subtitle">InfoNCE Derivation</p>
+            </header>
+
+            <div class="content-card">
+                <h3>📐 InfoNCE Formula</h3>
+                <p>
+                    InfoNCE adalah loss function yang di-derive dari <strong>Noise Contrastive Estimation</strong>:
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">L = -log(exp(sim(q, k⁺)/τ) / Σⱼ exp(sim(q, kⱼ)/τ))</div>
+                    <div class="formula-step">sim(q, k) = (q·k) / (||q|| ||k||) (cosine similarity)</div>
+                    <div class="formula-step">τ: temperature parameter</div>
+                    <p class="formula-note">
+                        Minimize loss → maximize similarity dengan positive, minimize dengan negatives
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔍 Component Breakdown</h4>
+                <ul>
+                    <li><strong>q</strong>: Query/anchor embedding</li>
+                    <li><strong>k⁺</strong>: Positive key embedding (matched pair)</li>
+                    <li><strong>kᵢ⁻</strong>: Negative key embeddings (i = 1...N-1)</li>
+                    <li><strong>sim(·,·)</strong>: Similarity function (biasanya cosine)</li>
+                    <li><strong>τ</strong>: Temperature (controls distribution sharpness)</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>💭 Intuition: Softmax Classification</h4>
+                <p>
+                    InfoNCE bisa dipandang sebagai <strong>N-way classification problem</strong>:
+                </p>
+                <div class="formula-box">
+                    <div class="formula-step">logits = [sim(q,k₁), sim(q,k₂), ..., sim(q,k_N)] / τ</div>
+                    <div class="formula-step">L = CrossEntropy(logits, target=positive_index)</div>
+                    <p class="formula-note">
+                        Model harus "classify" mana yang positive pair di antara N candidates!
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Mutual Information Perspective</h4>
+                <p>
+                    InfoNCE memaksimalkan <strong>lower bound</strong> dari mutual information I(q; k⁺):
+                </p>
+                <div class="highlight-box">
+                    <p><strong>Goal:</strong> Maximize I(q; k⁺)</p>
+                    <p>
+                        InfoNCE loss = -log P(positive | q, {k₁, ..., k_N})<br>
+                        Minimizing InfoNCE ≈ Maximizing MI
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('intro')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('mechanics')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 3: Contrastive Mechanics -->
+        <section id="mechanics" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Contrastive Mechanics</h2>
+                <p class="section-subtitle">Pull Positive, Push Negative</p>
+            </header>
+
+            <div class="content-card">
+                <h3>⚙️ How Contrastive Learning Works</h3>
+                <p>
+                    Contrastive learning training menggunakan <strong>pull</strong> dan <strong>push</strong> forces:
+                </p>
+
+                <div class="dual-force">
+                    <div class="positive-box glow-positive">
+                        <div class="force-title">➡️ Pull Force</div>
+                        <p><strong>Positive pairs</strong> ditarik lebih dekat di embedding space</p>
+                        <div class="formula-step" style="margin-top: var(--space-sm);">
+                            Gradient mendorong:<br>
+                            sim(anchor, positive) → 1.0
+                        </div>
+                    </div>
+                    <div class="negative-box glow-negative">
+                        <div class="force-title">⬅️ Push Force</div>
+                        <p><strong>Negative pairs</strong> didorong lebih jauh</p>
+                        <div class="formula-step" style="margin-top: var(--space-sm);">
+                            Gradient mendorong:<br>
+                            sim(anchor, negative) → 0.0
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📦 Batch Construction</h4>
+                <p>
+                    Untuk batch size N, kita punya:
+                </p>
+                <ul>
+                    <li>✅ <strong>N positive pairs</strong>: (anchor₁, positive₁), ..., (anchor_N, positive_N)</li>
+                    <li>❌ <strong>N×(N-1) negative pairs</strong>: Semua kombinasi lain dalam batch!</li>
+                </ul>
+                <div class="highlight-box positive-highlight">
+                    <p><strong>Efficient Negatives:</strong></p>
+                    <p>
+                        Dengan batch size N=256, setiap sample punya:
+                    </p>
+                    <ul>
+                        <li>1 positive pair</li>
+                        <li>255 negative pairs (in-batch negatives)</li>
+                    </ul>
+                    <p>Tidak perlu explicit negative sampling!</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>Example: SimCLR Augmentation</h4>
+                <p>
+                    Dalam self-supervised vision learning (SimCLR):
+                </p>
+                <ol>
+                    <li>Ambil batch N images</li>
+                    <li>Create 2 augmented views per image → 2N total</li>
+                    <li>Positive: dua views dari same image</li>
+                    <li>Negative: views dari different images</li>
+                </ol>
+                <div class="formula-box">
+                    <div class="formula-step">
+                        Image "dog.jpg"<br>
+                        ↓<br>
+                        [Augment 1: crop+flip] & [Augment 2: color+rotate]<br>
+                        ↓<br>
+                        These are positive pairs!
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Contrastive Forces Animation</h4>
+                <div class="contrastive-viz">
+                    <canvas id="contrastiveCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playContrastive">▶ Play Animation</button>
+                        <button class="btn-control" id="resetContrastive">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="contrastiveStatus">
+                        Visualize pull/push forces in embedding space
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('math')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('temperature')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 4: Temperature Parameter -->
+        <section id="temperature" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Temperature Parameter</h2>
+                <p class="section-subtitle">Controlling Distribution Sharpness</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🌡️ What is Temperature τ?</h3>
+                <p>
+                    Temperature <strong>τ (tau)</strong> adalah parameter yang mengontrol "sharpness" dari
+                    softmax distribution di InfoNCE loss.
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">Softmax = exp(sim/τ) / Σ exp(sim/τ)</div>
+                    <p class="formula-note">
+                        τ kecil → sharp distribution<br>
+                        τ besar → smooth distribution
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Temperature Effects</h4>
+                <div class="dual-force">
+                    <div
+                        style="background: rgba(59, 130, 246, 0.1); border: 2px solid #3b82f6; padding: var(--space-lg); border-radius: var(--radius-md);">
+                        <h4 style="color: #3b82f6;">Low Temperature (τ = 0.07)</h4>
+                        <ul>
+                            <li>✅ <strong>Sharp distribution</strong></li>
+                            <li>✅ Very confident predictions</li>
+                            <li>✅ Better differentiation</li>
+                            <li>❌ Harder optimization</li>
+                        </ul>
+                        <div class="formula-step" style="margin-top: var(--space-sm);">
+                            P_positive ≈ 0.95, P_negative ≈ 0.001
+                        </div>
+                    </div>
+                    <div
+                        style="background: rgba(245, 158, 11, 0.1); border: 2px solid var(--color-temperature); padding: var(--space-lg); border-radius: var(--radius-md);">
+                        <h4 style="color: var(--color-temperature);">High Temperature (τ = 1.0)</h4>
+                        <ul>
+                            <li>✅ <strong>Smooth distribution</strong></li>
+                            <li>✅ Easier optimization</li>
+                            <li>✅ Gradients spread out</li>
+                            <li>❌ Less confident</li>
+                        </ul>
+                        <div class="formula-step" style="margin-top: var(--space-sm);">
+                            P_positive ≈ 0.60, P_negative ≈ 0.08
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎛️ Temperature Interactive Demo</h4>
+                <div class="temperature-viz">
+                    <div class="temperature-control">
+                        <div class="temperature-label">Temperature τ</div>
+                        <div class="slider-container">
+                            <input type="range" class="temp-slider" id="tempSlider" min="0.01" max="1.0" step="0.01"
+                                value="0.07">
+                            <div class="temp-value" id="tempValue">0.07</div>
+                        </div>
+                    </div>
+                    <canvas id="temperatureCanvas" width="800" height="300"></canvas>
+                    <div class="animation-status" id="temperatureStatus">
+                        Adjust slider to see temperature effect on distribution
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔧 Learnable vs Fixed Temperature</h4>
+                <p>
+                    Temperature bisa di-set sebagai:
+                </p>
+                <ul>
+                    <li>🔒 <strong>Fixed</strong>: τ = 0.07 (umum di SimCLR, CLIP)</li>
+                    <li>📈 <strong>Learnable</strong>: τ sebagai nn.Parameter (CLIP approach)</li>
+                </ul>
+                <div class="highlight-box">
+                    <p><strong>CLIP's Approach:</strong></p>
+                    <p>
+                        Learnable log-scale temperature:<br>
+                        <code>self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1/0.07))</code><br>
+                        <code>temperature = logit_scale.exp()</code>
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('mechanics')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('symmetric')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 5: Symmetric Loss -->
+        <section id="symmetric" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Symmetric Loss</h2>
+                <p class="section-subtitle">Bidirectional Alignment</p>
+            </header>
+
+            <div class="content-card">
+                <h3>⚖️ Why Symmetric?</h3>
+                <p>
+                    Dalam multimodal learning (e.g., CLIP), kita punya dua modalities: image & text.
+                    <strong>Symmetric loss</strong> ensure alignment dua arah!
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">L = (L_I→T + L_T→I) / 2</div>
+                    <div class="formula-step">L_I→T: InfoNCE dari image ke text (row-wise)</div>
+                    <div class="formula-step">L_T→I: InfoNCE dari text ke image (column-wise)</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Similarity Matrix</h4>
+                <p>
+                    Untuk batch N=4, similarity matrix S (4×4):
+                </p>
+                <div class="matrix-container">
+                    <div
+                        style="display: inline-grid; grid-template-columns: 80px repeat(4, 60px); gap: 8px; text-align: center;">
+                        <div></div>
+                        <div style="color: #3b82f6; font-size: 0.875rem; font-weight: 600;">T₁</div>
+                        <div style="color: #3b82f6; font-size: 0.875rem; font-weight: 600;">T₂</div>
+                        <div style="color: #3b82f6; font-size: 0.875rem; font-weight: 600;">T₃</div>
+                        <div style="color: #3b82f6; font-size: 0.875rem; font-weight: 600;">T₄</div>
+
+                        <div
+                            style="color: #f59e0b; font-size: 0.875rem; font-weight: 600; display: flex; align-items: center;">
+                            I₁</div>
+                        <div class="matrix-cell positive">0.91</div>
+                        <div class="matrix-cell negative">0.15</div>
+                        <div class="matrix-cell negative">0.08</div>
+                        <div class="matrix-cell negative">0.12</div>
+
+                        <div
+                            style="color: #f59e0b; font-size: 0.875rem; font-weight: 600; display: flex; align-items: center;">
+                            I₂</div>
+                        <div class="matrix-cell negative">0.18</div>
+                        <div class="matrix-cell positive">0.89</div>
+                        <div class="matrix-cell negative">0.11</div>
+                        <div class="matrix-cell negative">0.09</div>
+
+                        <div
+                            style="color: #f59e0b; font-size: 0.875rem; font-weight: 600; display: flex; align-items: center;">
+                            I₃</div>
+                        <div class="matrix-cell negative">0.10</div>
+                        <div class="matrix-cell negative">0.14</div>
+                        <div class="matrix-cell positive">0.93</div>
+                        <div class="matrix-cell negative">0.07</div>
+
+                        <div
+                            style="color: #f59e0b; font-size: 0.875rem; font-weight: 600; display: flex; align-items: center;">
+                            I₄</div>
+                        <div class="matrix-cell negative">0.13</div>
+                        <div class="matrix-cell negative">0.16</div>
+                        <div class="matrix-cell negative">0.06</div>
+                        <div class="matrix-cell positive">0.95</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>➡️ Row-wise Loss (Image → Text)</h4>
+                <p>
+                    For each image, classify which text is the match:
+                </p>
+                <div class="formula-box">
+                    <div class="formula-step">L_I→T = -(1/N) Σᵢ log(exp(Sᵢᵢ/τ) / Σⱼ exp(Sᵢⱼ/τ))</div>
+                    <p class="formula-note">Softmax across each row</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>⬇️ Column-wise Loss (Text → Image)</h4>
+                <p>
+                    For each text, classify which image is the match:
+                </p>
+                <div class="formula-box">
+                    <div class="formula-step">L_T→I = -(1/N) Σⱼ log(exp(Sⱼⱼ/τ) / Σᵢ exp(Sᵢⱼ/τ))</div>
+                    <p class="formula-note">Softmax across each column</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Symmetric Loss Visualization</h4>
+                <div class="symmetric-viz">
+                    <canvas id="symmetricCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playSymmetric">▶ Play Animation</button>
+                        <button class="btn-control" id="resetSymmetric">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="symmetricStatus">
+                        Visualize row-wise and column-wise softmax
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('temperature')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('implementation')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 6: Implementation -->
+        <section id="implementation" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Implementation</h2>
+                <p class="section-subtitle">PyTorch Code</p>
+            </header>
+
+            <div class="content-card">
+                <h3>💻 InfoNCE PyTorch Implementation</h3>
+                <div class="code-block">
+                    <pre><code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class InfoNCE(nn.Module):
+    def __init__(self, temperature=0.07):
+        super().__init__()
+        self.temperature = temperature
+    
+    def forward(self, query, keys):
+        """
+        Compute InfoNCE loss.
+        
+        Args:
+            query: (batch, dim) - anchor embeddings
+            keys: (batch, dim) - key embeddings
+        
+        Returns:
+            loss: scalar InfoNCE loss
+        """
+        # Normalize embeddings
+        query = F.normalize(query, dim=-1)
+        keys = F.normalize(keys, dim=-1)
+        
+        # Compute cosine similarity matrix
+        logits = query @ keys.T / self.temperature  # (batch, batch)
+        
+        # Diagonal are positive pairs
+        labels = torch.arange(len(query), device=query.device)
+        
+        # Cross-entropy loss
+        loss = F.cross_entropy(logits, labels)
+        
+        return loss</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Symmetric InfoNCE (CLIP-style)</h4>
+                <div class="code-block">
+                    <pre><code>class SymmetricInfoNCE(nn.Module):
+    def __init__(self, temperature=0.07):
+        super().__init__()
+        self.temperature = temperature
+    
+    def forward(self, image_embeds, text_embeds):
+        """
+        Symmetric contrastive loss.
+        
+        Args:
+            image_embeds: (N, dim)
+            text_embeds: (N, dim)
+        
+        Returns:
+            loss: symmetric InfoNCE loss
+        """
+        # Normalize
+        image_embeds = F.normalize(image_embeds, dim=-1)
+        text_embeds = F.normalize(text_embeds, dim=-1)
+        
+        # Similarity matrix
+        logits = image_embeds @ text_embeds.T / self.temperature  # (N, N)
+        
+        # Labels: diagonal indices
+        labels = torch.arange(len(image_embeds), device=image_embeds.device)
+        
+        # Row-wise (image → text)
+        loss_i2t = F.cross_entropy(logits, labels)
+        
+        # Column-wise (text → image)
+        loss_t2i = F.cross_entropy(logits.T, labels)
+        
+        # Symmetric average
+        loss = (loss_i2t + loss_t2i) / 2
+        
+        return loss</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎓 Training Loop Example</h4>
+                <div class="code-block">
+                    <pre><code>def train_contrastive(model, dataloader, optimizer, device):
+    """Training loop dengan InfoNCE."""
+    model.train()
+    criterion = SymmetricInfoNCE(temperature=0.07).to(device)
+    
+    for images, texts in dataloader:
+        images = images.to(device)
+        texts = texts.to(device)
+        
+        # Forward: get embeddings
+        image_embeds = model.encode_image(images)  # (N, dim)
+        text_embeds = model.encode_text(texts)      # (N, dim)
+        
+        # Compute symmetric InfoNCE loss
+        loss = criterion(image_embeds, text_embeds)
+        
+        # Backward
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        
+        print(f"Loss: {loss.item():.4f}")
+    
+    return loss.item()</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔧 Learnable Temperature</h4>
+                <div class="code-block">
+                    <pre><code>import numpy as np
+
+class LearnableTemperature(nn.Module):
+    def __init__(self, init_temp=0.07):
+        super().__init__()
+        # Log-scale learnable parameter (CLIP approach)
+        self.logit_scale = nn.Parameter(
+            torch.ones([]) * np.log(1 / init_temp)
+        )
+    
+    def forward(self, query, keys):
+        # Normalize
+        query = F.normalize(query, dim=-1)
+        keys = F.normalize(keys, dim=-1)
+        
+        # Similarity with learnable scale
+        temperature = self.logit_scale.exp()
+        logits = query @ keys.T * temperature
+        
+        # InfoNCE
+        labels = torch.arange(len(query), device=query.device)
+        loss = F.cross_entropy(logits, labels)
+        
+        return loss, temperature.item()</code></pre>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('symmetric')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('applications')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 7: Applications -->
+        <section id="applications" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Applications</h2>
+                <p class="section-subtitle">InfoNCE in the Wild</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🚀 InfoNCE Applications</h3>
+                <p>
+                    InfoNCE telah menjadi <strong>foundational loss</strong> untuk banyak breakthrough models:
+                </p>
+
+                <div class="application-grid">
+                    <div class="application-card">
+                        <h4>🌐 CLIP</h4>
+                        <p><strong>Vision-Language Alignment</strong></p>
+                        <p>400M (image, text) pairs training dengan symmetric InfoNCE</p>
+                        <div class="example">Zero-shot classification, text-to-image retrieval</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🖼️ SimCLR</h4>
+                        <p><strong>Self-Supervised Vision</strong></p>
+                        <p>Learn representations dari augmented views dengan InfoNCE</p>
+                        <div class="example">Pre-training untuk downstream vision tasks</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🎯 MoCo</h4>
+                        <p><strong>Momentum Contrast</strong></p>
+                        <p>Large negative queue + momentum encoder</p>
+                        <div class="example">Efficient contrastive learning untuk vision</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>📊 CPC</h4>
+                        <p><strong>Contrastive Predictive Coding</strong></p>
+                        <p>Predict future representations dengan InfoNCE</p>
+                        <div class="example">Time-series, audio, video understanding</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🔊 Audio SSL</h4>
+                        <p><strong>wav2vec 2.0</strong></p>
+                        <p>Learn speech representations without transcripts</p>
+                        <div class="example">Speech recognition, speaker identification</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🎬 Video Understanding</h4>
+                        <p><strong>VideoMoCo</strong></p>
+                        <p>Temporal contrastive learning untuk video</p>
+                        <div class="example">Action recognition, video retrieval</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Why InfoNCE Works So Well</h4>
+                <ul>
+                    <li>✅ <strong>Simple</strong>: Easy to implement (just softmax + cross-entropy)</li>
+                    <li>✅ <strong>Scalable</strong>: Efficient with large batches</li>
+                    <li>✅ <strong>Effective</strong>: Strong performance across domains</li>
+                    <li>✅ <strong>Flexible</strong>: Works for unimodal & multimodal</li>
+                    <li>✅ <strong>No labels needed</strong>: Self-supervised learning</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>🎯 Key Takeaways</h4>
+                <div class="highlight-box positive-highlight">
+                    <p><strong>InfoNCE Core Principles:</strong></p>
+                    <ul>
+                        <li>🔥 Maximize similarity untuk positive pairs</li>
+                        <li>❄️ Minimize similarity untuk negative pairs</li>
+                        <li>🌡️ Temperature controls sharpness</li>
+                        <li>⚖️ Symmetric loss untuk bidirectional alignment</li>
+                        <li>📊 Softmax framework makes it easy</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>✅ Selamat!</h4>
+                <div class="completion-box">
+                    <h4>🎉 Tutorial Selesai!</h4>
+                    <p>Anda telah mempelajari:</p>
+                    <ul>
+                        <li>✅ InfoNCE mathematical foundation</li>
+                        <li>✅ Contrastive mechanics (pull/push)</li>
+                        <li>✅ Temperature parameter effects</li>
+                        <li>✅ Symmetric loss untuk multimodal</li>
+                        <li>✅ PyTorch implementation</li>
+                        <li>✅ Real-world applications</li>
+                    </ul>
+
+                    <div class="next-steps" style="margin-top: var(--space-lg);">
+                        <h4>🚀 Next Steps</h4>
+                        <p>• Implement InfoNCE untuk your dataset</p>
+                        <p>• Experiment dengan temperature values</p>
+                        <p>• Explore CLIP, SimCLR source code</p>
+                        <p>• Read papers: CPC, MoCo, SimCLR, CLIP</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('implementation')">← Kembali</button>
+                <button class="btn-restart" onclick="navigateToSection('intro')">↻ Mulai Lagi</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript -->
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
