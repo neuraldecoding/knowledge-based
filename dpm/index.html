@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Diffusion Probabilistic Models</title>
+    <meta name="description" content="Tutorial interaktif tentang Diffusion Models untuk generative modeling">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="logo">🌊 Diffusion Models</h1>
+            <p class="subtitle">Generative Modeling</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" data-section="intro">
+                <span class="nav-number">01</span>
+                <span class="nav-title">Pengenalan</span>
+            </li>
+            <li class="nav-item" data-section="forward">
+                <span class="nav-number">02</span>
+                <span class="nav-title">Forward Diffusion</span>
+            </li>
+            <li class="nav-item" data-section="reverse">
+                <span class="nav-number">03</span>
+                <span class="nav-title">Reverse Diffusion</span>
+            </li>
+            <li class="nav-item" data-section="ddpm">
+                <span class="nav-number">04</span>
+                <span class="nav-title">DDPM</span>
+            </li>
+            <li class="nav-item" data-section="ddim">
+                <span class="nav-number">05</span>
+                <span class="nav-title">DD
+
+                    IM & Improvements</span>
+            </li>
+            <li class="nav-item" data-section="score">
+                <span class="nav-number">06</span>
+                <span class="nav-title">Score-Based Models</span>
+            </li>
+            <li class="nav-item" data-section="implementation">
+                <span class="nav-number">07</span>
+                <span class="nav-title">Implementation</span>
+            </li>
+            <li class="nav-item" data-section="applications">
+                <span class="nav-number">08</span>
+                <span class="nav-title">Applications</span>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Section 1: Pengenalan -->
+        <section id="intro" class="tutorial-section active">
+            <header class="section-header">
+                <h2 class="section-title">Diffusion Models</h2>
+                <p class="section-subtitle">Denoising Diffusion Probabilistic Models</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🌊 Apa itu Diffusion Models?</h3>
+                <p>
+                    <strong>Diffusion Models</strong> adalah generative models yang belajar menghasilkan data
+                    dengan cara membalikkan proses penambahan noise secara bertahap.
+                </p>
+                <div class="highlight-box">
+                    <p><strong>Core Idea:</strong></p>
+                    <p>
+                        <span style="color: var(--color-forward); font-weight: 700;">Forward:</span> Tambahkan noise
+                        bertahap (x₀ → x_T)<br>
+                        <span style="color: var(--color-reverse); font-weight: 700;">Reverse:</span> Pelajari cara
+                        menghilangkan noise (x_T → x₀)
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎨 Mengapa Diffusion Models?</h4>
+                <divsty class="dual-process">
+                    <div class="forward-box glow-forward">
+                        <div class="process-title">➡️ Forward Process</div>
+                        <p>Gradually add Gaussian noise</p>
+                        <p style="margin-top: var(--space-sm);">
+                            x₀ (clean) → x₁ → x₂ → ... → x_T (pure noise)
+                        </p>
+                    </div>
+                    <div class="reverse-box glow-reverse">
+                        <div class="process-title">⬅️ Reverse Process</div>
+                        <p>Learn to denoise step-by-step</p>
+                        <p style="margin-top: var(--space-sm);">
+                            x_T (noise) → ... → x₁ → x₀ (generated image)
+                        </p>
+                    </div>
+            </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Comparison: GAN vs VAE vs Diffusion</h4>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Pros</th>
+                            <th>Cons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GAN</strong></td>
+                            <td>High quality, fast sampling</td>
+                            <td>Training instability, mode collapse</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VAE</strong></td>
+                            <td>Stable training, good latent space</td>
+                            <td>Blurry outputs</td>
+                        </tr>
+                        <tr>
+                            <td><strong class="highlight">Diffusion</strong></td>
+                            <td class="highlight">Excellent quality, stable training, diverse outputs</td>
+                            <td>Slow sampling (many steps)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-card">
+                <h4>🎯 Yang Akan Dipelajari</h4>
+                <div class="learning-grid">
+                    <div class="learning-item">
+                        <div class="icon">➡️</div>
+                        <h4>Forward Process</h4>
+                        <p>Noise schedule β_t</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">⬅️</div>
+                        <h4>Reverse Process</h4>
+                        <p>Denoising dengan U-Net</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">📐</div>
+                        <h4>DDPM</h4>
+                        <p>Training objective</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">⚡</div>
+                        <h4>DDIM</h4>
+                        <p>Fast sampling</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-next" onclick="navigateToSection('forward')">Mulai Belajar →</button>
+            </div>
+        </section>
+
+        <!-- Section 2: Forward Diffusion -->
+        <section id="forward" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Forward Diffusion Process</h2>
+                <p class="section-subtitle">Gradually Adding Noise</p>
+            </header>
+
+            <div class="content-card">
+                <h3>➡️ Forward Process</h3>
+                <p>
+                    Forward diffusion adalah proses <strong>Markov chain</strong> yang menambahkan
+                    Gaussian noise secara bertahap ke data bersih x₀.
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">q(x_t | x_{t-1}) = N(x_t; √(1-β_t)x_{t-1}, β_t I)</div>
+                    <div class="formula-step">β_t: noise schedule (controls noise amount at step t)</div>
+                    <p class="formula-note">
+                        Each step adds small Gaussian noise
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔍 Noise Schedule β_t</h4>
+                <p>
+                    β_t mengontrol seberapa banyak noise ditambahkan di step t:
+                </p>
+                <ul>
+                    <li>📈 <strong>Linear schedule</strong>: β_t increases linearly from β₁ to β_T</li>
+                    <li>📉 <strong>Cosine schedule</strong>: Smoother transition, better performance</li>
+                    <li>📊 <strong>Custom schedules</strong>: Optimized untuk dataset tertentu</li>
+                </ul>
+
+                <div class="highlight-box forward-highlight">
+                    <p><strong>Common Values:</strong></p>
+                    <p>
+                        β₁ = 10⁻⁴ (very small noise)<br>
+                        β_T = 0.02 (substantial noise)<br>
+                        T = 1000 steps
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>⚡ Direct Sampling: q(x_t | x₀)</h4>
+                <p>
+                    Kita tidak perlu iterasi T kali! Ada closed-form solution:
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">q(x_t | x₀) = N(x_t; √(ᾱ_t)x₀, (1-ᾱ_t)I)</div>
+                    <div class="formula-step">ᾱ_t = ∏_{s=1}^t (1-β_s) = ∏_{s=1}^t α_s</div>
+                    <div class="formula-step">α_t = 1 - β_t</div>
+                    <p class="formula-note">
+                        Reparameterization: x_t = √(ᾱ_t)x₀ + √(1-ᾱ_t)ε, where ε ~ N(0,I)
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📅 Diffusion Timeline</h4>
+                <div class="diffusion-timeline">
+                    <div class="timeline-step start">
+                        <div>t=0</div>
+                        <div>🖼️ Clean Image</div>
+                        <div style="font-size: 0.75rem;">x₀</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-step">
+                        <div>t=250</div>
+                        <div>🌫️ Little Noise</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-step">
+                        <div>t=500</div>
+                        <div>☁️ More Noise</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-step">
+                        <div>t=750</div>
+                        <div>🌊 Heavy Noise</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-step end">
+                        <div>t=1000</div>
+                        <div>🔊 Pure Noise</div>
+                        <div style="font-size: 0.75rem;">x_T ~ N(0,I)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Forward Diffusion Animation</h4>
+                <div class="forward-viz">
+                    <canvas id="forwardCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playForward">▶ Play Animation</button>
+                        <button class="btn-control" id="resetForward">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="forwardStatus">
+                        Watch image gradually become pure noise
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('intro')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('reverse')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 3: Reverse Diffusion -->
+        <section id="reverse" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Reverse Diffusion Process</h2>
+                <p class="section-subtitle">Learning to Denoise</p>
+            </header>
+
+            <div class="content-card">
+                <h3>⬅️ Reverse Process</h3>
+                <p>
+                    Reverse diffusion adalah proses yang <strong>dipelajari</strong> untuk menghilangkan noise
+                    secara bertahap, starting dari pure noise x_T → clean data x₀.
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">p_θ(x_{t-1} | x_t) = N(x_{t-1}; μ_θ(x_t, t), Σ_θ(x_t, t))</div>
+                    <div class="formula-step">θ: learned parameters (neural network)</div>
+                    <div class="formula-step">μ_θ: predicted mean</div>
+                    <div class="formula-step">Σ_θ: predicted variance (or fixed)</div>
+                    <p class="formula-note">
+                        Goal: Learn to reverse the forward process!
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🏗️ U-Net Noise Predictor</h4>
+                <p>
+                    Diffusion models menggunakan <strong>U-Net</strong> untuk memprediksi noise ε_θ(x_t, t):
+                </p>
+                <ul>
+                    <li>📥 <strong>Input</strong>: Noisy image x_t + timestep embedding t</li>
+                    <li>🎯 <strong>Output</strong>: Predicted noise ε_θ that was added</li>
+                    <li>🏛️ <strong>Architecture</strong>: Encoder-decoder dengan skip connections</li>
+                    <li>⏰ <strong>Time embedding</strong>: Sinusoidal positional encoding</li>
+                </ul>
+
+                <div class="highlight-box reverse-highlight">
+                    <p><strong>Key Insight:</strong></p>
+                    <p>
+                        Instead of predicting x₀ directly, predict the <strong>noise</strong> that was added!<br>
+                        Then compute: x₀ = (x_t - √(1-ᾱ_t)ε_θ) / √(ᾱ_t)
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔄 Denoising Step</h4>
+                <p>
+                    Given x_t, untuk mendapatkan x_{t-1}:
+                </p>
+
+                <div class="formula-box">
+                    <div class="formula-step">1. Predict noise: ε_θ = ε_θ(x_t, t)</div>
+                    <div class="formula-step">2. Compute mean: μ_θ = (1/√α_t)(x_t - (β_t/√(1-ᾱ_t))ε_θ)</div>
+                    <div class="formula-step">3. Sample: x_{t-1} = μ_θ + √β_t · z, where z ~ N(0,I)</div>
+                    <p class="formula-note">
+                        For t=1, set z=0 (deterministic final step)
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Reverse Diffusion Animation</h4>
+                <div class="reverse-viz">
+                    <canvas id="reverseCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playReverse">▶ Play Animation</button>
+                        <button class="btn-control" id="resetReverse">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="reverseStatus">
+                        Watch noise gradually become a clean image
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('forward')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('ddpm')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 4: DDPM -->
+        <section id="ddpm" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">DDPM</h2>
+                <p class="section-subtitle">Denoising Diffusion Probabilistic Models</p>
+            </header>
+
+            <div class="content-card">
+                <h3>📐 DDPM Training Objective</h3>
+                <p>
+                    DDPM (Ho et al., 2020) mempelajari reverse process dengan memaksimalkan
+                    <strong>variational lower bound</strong>:
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">L_VLB = E_q[D_KL(q(x_T|x_0)||p(x_T)) + Σ_t
+                        D_KL(q(x_{t-1}|x_t,x_0)||p_θ(x_{t-1}|x_t))]</div>
+                    <p class="formula-note">
+                        This is complex! Ho et al. showed a simpler equivalent objective...
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>⚡ Simplified Loss (Actually Used)</h4>
+                <p>
+                    In practice, kita gunakan simplified objective:
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">L_simple = E_{t,x_0,ε}[||ε - ε_θ(√(ᾱ_t)x_0 + √(1-ᾱ_t)ε, t)||²]</div>
+                    <div class="formula-step">t ~ Uniform({1, ..., T})</div>
+                    <div class="formula-step">ε ~ N(0, I)</div>
+                    <div class="formula-step">x_t = √(ᾱ_t)x_0 + √(1-ᾱ_t)ε (reparameterization)</div>
+                    <p class="formula-note">
+                        Simply: predict the noise that was added!
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Training Algorithm:</strong></p>
+                    <ol>
+                        <li>Sample x₀ from data</li>
+                        <li>Sample timestep t uniformly</li>
+                        <li>Sample noise ε ~ N(0,I)</li>
+                        <li>Compute noisy x_t using reparameterization</li>
+                        <li>Predict noise: ε_pred = ε_θ(x_t, t)</li>
+                        <li>Loss = ||ε - ε_pred||²</li>
+                        <li>Backprop and update θ</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎲 Sampling Algorithm (DDPM)</h4>
+                <div class="formula-box">
+                    <div class="formula-step"><strong>Initialize:</strong> x_T ~ N(0, I)</div>
+                    <div class="formula-step"><strong>For</strong> t = T, T-1, ..., 1:</div>
+                    <div class="formula-step" style="margin-left: var(--space-md);">
+                        z ~ N(0,I) if t > 1, else z = 0
+                    </div>
+                    <div class="formula-step" style="margin-left: var(--space-md);">
+                        ε_pred = ε_θ(x_t, t)
+                    </div>
+                    <div class="formula-step" style="margin-left: var(--space-md);">
+                        x_{t-1} = (1/√α_t)(x_t - (β_t/√(1-ᾱ_t))ε_pred) + √β_t·z
+                    </div>
+                    <div class="formula-step"><strong>Return:</strong> x₀</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Key Insights</h4>
+                <ul>
+                    <li>🎯 <strong>Noise prediction</strong> easier than direct x₀ prediction</li>
+                    <li>🔄 <strong>Reparameterization</strong> allows direct sampling of any x_t</li>
+                    <li>📊 <strong>Simple MSE loss</strong> works better than complex VLB</li>
+                    <li>⏱️ <strong>T=1000 steps</strong> typical for high-quality generation</li>
+                </ul>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('reverse')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('ddim')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 5: DDIM & Improvements -->
+        <section id="ddim" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">DDIM & Improvements</h2>
+                <p class="section-subtitle">Faster Sampling & Enhancements</p>
+            </header>
+
+            <div class="content-card">
+                <h3>⚡ DDIM (Denoising Diffusion Implicit Models)</h3>
+                <p>
+                    <strong>Problem dengan DDPM:</strong> Sampling memerlukan T=1000 steps (slow!)<br>
+                    <strong>Solution:</strong> DDIM (Song et al., 2020) - deterministic sampling dengan fewer steps.
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">x_{t-1} = √(ᾱ_{t-1})·pred_x₀ + √(1-ᾱ_{t-1}-σ_t²)·ε_θ + σ_t·z</div>
+                    <div class="formula-step">pred_x₀ = (x_t - √(1-ᾱ_t)ε_θ) / √(ᾱ_t)</div>
+                    <div class="formula-step">σ_t = 0 → deterministic (DDIM)</div>
+                    <div class="formula-step">σ_t = √((1-ᾱ_{t-1})/(1-ᾱ_t))·√(1-ᾱ_t/ᾱ_{t-1}) → stochastic (DDPM)</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🚀 Faster Sampling</h4>
+                <p>
+                    DDIM allows <strong>skipping timesteps</strong> without retraining:
+                </p>
+                <ul>
+                    <li>🏃 <strong>10-50 steps</strong> instead of 1000 (20-100x faster!)</li>
+                    <li>🎯 <strong>Deterministic</strong>: same noise → same image</li>
+                    <li>🔄 <strong>Interpolation</strong>: smooth latent space</li>
+                    <li>✏️ <strong>Inversion</strong>: encode real images to latent</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p><strong>DDIM Sampling (S=50 steps):</strong></p>
+                    <p>
+                        Use subset of timesteps: {1000, 980, 960, ..., 40, 20}<br>
+                        Much faster while maintaining quality!
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Noise Schedules</h4>
+                <p>
+                    Berbagai noise schedules untuk performa lebih baik:
+                </p>
+
+                <div class="schedule-selector">
+                    <div class="schedule-label">Schedule Types</div>
+                    <div class="schedule-buttons">
+                        <button class="schedule-btn active">Linear</button>
+                        <button class="schedule-btn">Cosine</button>
+                        <button class="schedule-btn">Quadratic</button>
+                        <button class="schedule-btn">Sigmoid</button>
+                    </div>
+                </div>
+
+                <ul style="margin-top: var(--space-md);">
+                    <li>📈 <strong>Linear</strong>: Original DDPM, simple</li>
+                    <li>📉 <strong>Cosine</strong>: Better for high-res, less noise at extremes</li>
+                    <li>📊 <strong>Custom</strong>: Learned or hand-tuned for specific data</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>🎨 Classifier-Free Guidance</h4>
+                <p>
+                    Untuk <strong>conditional generation</strong> (e.g., text-to-image):
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">ε_guided = ε_uncond + w·(ε_cond - ε_uncond)</div>
+                    <div class="formula-step">w: guidance scale (typically 7.5)</div>
+                    <div class="formula-step">Higher w → stronger adherence to condition</div>
+                    <p class="formula-note">
+                        Train both conditional and unconditional models jointly!
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Example (Text-to-Image):</strong></p>
+                    <p>
+                        Condition: "a cat wearing a hat"<br>
+                        w=1.0 → mostly ignore text<br>
+                        w=7.5 → strong text adherence<br>
+                        w=15.0 → very strong, may sacrifice quality
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('ddpm')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('score')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 6: Score-Based Models -->
+        <section id="score" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Score-Based Models</h2>
+                <p class="section-subtitle">Score Matching Perspective</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🎯 Score Matching</h3>
+                <p>
+                    Alternative perspective: learn the <strong>score function</strong> ∇_x log p(x).
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">s_θ(x, t) ≈ ∇_x log p_t(x)</div>
+                    <div class="formula-step">Score: gradient of log probability</div>
+                    <div class="formula-step">Points toward higher probability regions</div>
+                    <p class="formula-note">
+                        Connection: score = -ε / √(1-ᾱ_t)
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🌊 Langevin Dynamics</h4>
+                <p>
+                    Sampling dengan Langevin dynamics:
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">x_{t+1} = x_t + δ·∇_x log p(x_t) + √(2δ)·z</div>
+                    <div class="formula-step">δ: step size</div>
+                    <div class="formula-step">z ~ N(0, I)</div>
+                    <p class="formula-note">
+                        Move toward high density + random walk
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📐 SDE Formulation</h4>
+                <p>
+                    Song et al. unified view: diffusion as <strong>Stochastic Differential Equation</strong>:
+                </p>
+
+                <div class="formula-box">
+                    <div class="formula-step">Forward SDE: dx = f(x,t)dt + g(t)dw</div>
+                    <div class="formula-step">Reverse SDE: dx = [f(x,t) - g(t)²∇_x log p_t(x)]dt + g(t)d‾w</div>
+                    <p class="formula-note">
+                        Learn score, solve reverse SDE → generate samples
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔗 Connection to Diffusion</h4>
+                <ul>
+                    <li>🎯 <strong>Score-based</strong>: ∇_x log p(x) perspective</li>
+                    <li>🌊 <strong>Diffusion</strong>: Forward/reverse process perspective</li>
+                    <li>🔄 <strong>Equivalent</strong>: Different views of same model!</li>
+                    <li>⚡ <strong>Unified</strong>: SDE framework combines both</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p><strong>Key Insight:</strong></p>
+                    <p>
+                        Denoising score matching ≈ Diffusion model training<br>
+                        Both learn to predict noise/score at different noise levels
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('ddim')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('implementation')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 7: Implementation -->
+        <section id="implementation" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Implementation</h2>
+                <p class="section-subtitle">PyTorch Code</p>
+            </header>
+
+            <div class="content-card">
+                <h3>💻 DDPM PyTorch Implementation</h3>
+                <div class="code-block">
+                    <pre><code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class DiffusionModel(nn.Module):
+    def __init__(self, unet, noise_steps=1000, beta_start=1e-4, beta_end=0.02):
+        super().__init__()
+        self.unet = unet  # Noise prediction network
+        self.noise_steps = noise_steps
+        
+        # Noise schedule (linear)
+        self.beta = torch.linspace(beta_start, beta_end, noise_steps)
+        self.alpha = 1 - self.beta
+        self.alpha_hat = torch.cumprod(self.alpha, dim=0)
+        
+    def add_noise(self, x_0, t, noise):
+        """
+        Add noise to x_0 to get x_t.
+        
+        Args:
+            x_0: clean images (batch, C, H, W)
+            t: timesteps (batch,)
+            noise: Gaussian noise (batch, C, H, W)
+        
+        Returns:
+            x_t: noisy images
+        """
+        sqrt_alpha_hat = torch.sqrt(self.alpha_hat[t])[:, None, None, None]
+        sqrt_one_minus_alpha_hat = torch.sqrt(1 - self.alpha_hat[t])[:, None, None, None]
+        
+        x_t = sqrt_alpha_hat * x_0 + sqrt_one_minus_alpha_hat * noise
+        return x_t
+    
+    def forward(self, x, t):
+        """Predict noise."""
+        return self.unet(x, t)</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎓 Training Loop</h4>
+                <div class="code-block">
+                    <pre><code>def train_diffusion(model, dataloader, optimizer, device, epochs=100):
+    """Train diffusion model."""
+    model.train()
+    
+    for epoch in range(epochs):
+        for x_0 in dataloader:
+            x_0 = x_0.to(device)
+            batch_size = x_0.shape[0]
+            
+            # Sample random timesteps
+            t = torch.randint(0, model.noise_steps, (batch_size,), device=device)
+            
+            # Sample noise
+            noise = torch.randn_like(x_0)
+            
+            # Add noise to get x_t
+            x_t = model.add_noise(x_0, t, noise)
+            
+            # Predict noise
+            noise_pred = model(x_t, t)
+            
+            # Simplified loss
+            loss = F.mse_loss(noise_pred, noise)
+            
+            # Backward
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+        
+        print(f"Epoch {epoch}, Loss: {loss.item():.4f}")</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎲 Sampling (DDPM)</h4>
+                <div class="code-block">
+                    <pre><code>@torch.no_grad()
+def sample_ddpm(model, n_samples, img_size, device):
+    """
+    Sample images using DDPM algorithm.
+    
+    Args:
+        model: trained diffusion model
+        n_samples: number of images to generate
+        img_size: (C, H, W)
+        device: cuda or cpu
+    
+    Returns:
+        generated images
+    """
+    model.eval()
+    C, H, W = img_size
+    
+    # Start from pure noise
+    x = torch.randn(n_samples, C, H, W, device=device)
+    
+    # Iteratively denoise
+    for t in reversed(range(model.noise_steps)):
+        # Create timestep tensor
+        t_tensor = torch.full((n_samples,), t, device=device, dtype=torch.long)
+        
+        # Predict noise
+        noise_pred = model(x, t_tensor)
+        
+        # Get schedule values
+        alpha = model.alpha[t]
+        alpha_hat = model.alpha_hat[t]
+        beta = model.beta[t]
+        
+        # Denoise step
+        if t > 0:
+            noise = torch.randn_like(x)
+        else:
+            noise = torch.zeros_like(x)
+        
+        x = (1 / torch.sqrt(alpha)) * (x - ((1 - alpha) / torch.sqrt(1 - alpha_hat)) * noise_pred) + torch.sqrt(beta) * noise
+    
+    return x</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>⚡ DDIM Sampling</h4>
+                <div class="code-block">
+                    <pre><code>@torch.no_grad()
+def sample_ddim(model, n_samples, img_size, device, ddim_steps=50):
+    """Fast sampling with DDIM."""
+    model.eval()
+    C, H, W = img_size
+    
+    # Subset of timesteps
+    timesteps = torch.linspace(model.noise_steps - 1, 0, ddim_steps, dtype=torch.long)
+    
+    # Start from noise
+    x = torch.randn(n_samples, C, H, W, device=device)
+    
+    for i, t in enumerate(timesteps):
+        t_tensor = torch.full((n_samples,), t, device=device, dtype=torch.long)
+        
+        # Predict noise
+        noise_pred = model(x, t_tensor)
+        
+        # Predict x_0
+        alpha_hat = model.alpha_hat[t]
+        pred_x0 = (x - torch.sqrt(1 - alpha_hat) * noise_pred) / torch.sqrt(alpha_hat)
+        
+        if i < len(timesteps) - 1:
+            t_prev = timesteps[i + 1]
+            alpha_hat_prev = model.alpha_hat[t_prev]
+            
+            # DDIM update (deterministic)
+            x = torch.sqrt(alpha_hat_prev) * pred_x0 + torch.sqrt(1 - alpha_hat_prev) * noise_pred
+        else:
+            x = pred_x0
+    
+    return x</code></pre>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('score')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('applications')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 8: Applications -->
+        <section id="applications" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Applications</h2>
+                <p class="section-subtitle">Diffusion Models in the Wild</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🚀 Diffusion Model Applications</h3>
+                <p>
+                    Diffusion models telah menjadi <strong>state-of-the-art</strong> untuk berbagai generative tasks:
+                </p>
+
+                <div class="application-grid">
+                    <div class="application-card">
+                        <h4>🎨 Stable Diffusion</h4>
+                        <p><strong>Latent Diffusion Models</strong></p>
+                        <p>Diffusion in compressed latent space (VAE encoder)</p>
+                        <div class="example">Text-to-image, img2img, inpainting</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🌟 DALL-E 2</h4>
+                        <p><strong>CLIP + Diffusion</strong></p>
+                        <p>Text → CLIP embedding → Diffusion decoder</p>
+                        <div class="example">High-quality text-to-image generation</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🖼️ Image Generation</h4>
+                        <p><strong>Unconditional/Class-conditional</strong></p>
+                        <p>Generate realistic images from noise</p>
+                        <div class="example">ImageNet, FFHQ, LSUN benchmarks</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>✏️ Image Editing</h4>
+                        <p><strong>Inpainting & Outpainting</strong></p>
+                        <p>Fill missing regions or extend images</p>
+                        <div class="example">Remove objects, extend backgrounds</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🔍 Super-Resolution</h4>
+                        <p><strong>SR3, Imagen</strong></p>
+                        <p>Upscale low-res images to high-res</p>
+                        <div class="example">64×64 → 256×256 → 1024×1024</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🎬 Video Generation</h4>
+                        <p><strong>Temporal Diffusion</strong></p>
+                        <p>Generate coherent video sequences</p>
+                        <div class="example">Text-to-video, video prediction</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🎵 Audio Synthesis</h4>
+                        <p><strong>WaveGrad, DiffWave</strong></p>
+                        <p>Generate high-quality audio waveforms</p>
+                        <div class="example">Text-to-speech, music generation</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🧬 Molecular Design</h4>
+                        <p><strong>Protein/Drug Generation</strong></p>
+                        <p>Generate novel molecular structures</p>
+                        <div class="example">Drug discovery, protein folding</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Why Diffusion Models Excel</h4>
+                <ul>
+                    <li>✅ <strong>High Quality</strong>: State-of-the-art image/video generation</li>
+                    <li>✅ <strong>Stable Training</strong>: No mode collapse like GANs</li>
+                    <li>✅ <strong>Diverse Outputs</strong>: Stochastic sampling</li>
+                    <li>✅ <strong>Flexible Conditioning</strong>: Text, class, layout, etc.</li>
+                    <li>✅ <strong>Principled Framework</strong>: Strong theoretical foundation</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>🔮 Future Directions</h4>
+                <ul>
+                    <li>⚡ <strong>Faster Sampling</strong>: 1-step diffusion models</li>
+                    <li>📹 <strong>Longer Videos</strong>: Temporal consistency</li>
+                    <li>🎮 <strong>3D Generation</strong>: NeRF + diffusion</li>
+                    <li>🧠 <strong>Efficiency</strong>: Smaller models, edge deployment</li>
+                    <li>🎨 <strong>Control</strong>: Better user control over generation</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>✅ Selamat!</h4>
+                <div class="completion-box">
+                    <h4>🎉 Tutorial Selesai!</h4>
+                    <p>Anda telah mempelajari:</p>
+                    <ul>
+                        <li>✅ Forward diffusion process (noise addition)</li>
+                        <li>✅ Reverse diffusion process (denoising)</li>
+                        <li>✅ DDPM training & sampling</li>
+                        <li>✅ DDIM for faster generation</li>
+                        <li>✅ Score-based perspective</li>
+                        <li>✅ PyTorch implementation</li>
+                        <li>✅ Real-world applications</li>
+                    </ul>
+
+                    <div class="next-steps" style="margin-top: var(--space-lg);">
+                        <h4>🚀 Next Steps</h4>
+                        <p>• Implement DDPM untuk your dataset</p>
+                        <p>• Experiment dengan noise schedules</p>
+                        <p>• Try Stable Diffusion, DALL-E 2</p>
+                        <p>• Read papers: DDPM, DDIM, Score-based models</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('implementation')">← Kembali</button>
+                <button class="btn-restart" onclick="navigateToSection('intro')">↻ Mulai Lagi</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript -->
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
