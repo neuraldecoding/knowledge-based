@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial CLIP - Contrastive Language-Image Pre-training</title>
+    <meta name="description" content="Tutorial interaktif tentang CLIP untuk multimodal learning dengan animasi">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="logo">🎨 CLIP</h1>
+            <p class="subtitle">Multimodal Learning</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" data-section="intro">
+                <span class="nav-number">01</span>
+                <span class="nav-title">Pengenalan</span>
+            </li>
+            <li class="nav-item" data-section="contrastive">
+                <span class="nav-number">02</span>
+                <span class="nav-title">Contrastive Learning</span>
+            </li>
+            <li class="nav-item" data-section="dual-encoders">
+                <span class="nav-number">03</span>
+                <span class="nav-title">Dual Encoders</span>
+            </li>
+            <li class="nav-item" data-section="training">
+                <span class="nav-number">04</span>
+                <span class="nav-title">Training Process</span>
+            </li>
+            <li class="nav-item" data-section="zeroshot">
+                <span class="nav-number">05</span>
+                <span class="nav-title">Zero-Shot Classification</span>
+            </li>
+            <li class="nav-item" data-section="applications">
+                <span class="nav-number">06</span>
+                <span class="nav-title">Applications</span>
+            </li>
+            <li class="nav-item" data-section="implementation">
+                <span class="nav-number">07</span>
+                <span class="nav-title">Implementation</span>
+            </li>
+            <li class="nav-item" data-section="advanced">
+                <span class="nav-number">08</span>
+                <span class="nav-title">Advanced Topics</span>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Section 1: Pengenalan CLIP -->
+        <section id="intro" class="tutorial-section active">
+            <header class="section-header">
+                <h2 class="section-title">CLIP</h2>
+                <p class="section-subtitle">Contrastive Language-Image Pre-training</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🎨 Apa itu CLIP?</h3>
+                <p>
+                    <strong>CLIP (Contrastive Language-Image Pre-training)</strong> adalah model multimodal dari OpenAI
+                    yang belajar
+                    menghubungkan <span style="color: var(--color-image);">gambar</span> dan
+                    <span style="color: var(--color-text);">teks</span> dalam embedding space yang sama.
+                </p>
+                <div class="highlight-box">
+                    <p><strong>Key Innovation:</strong></p>
+                    <p>
+                        CLIP dilatih dengan <strong>400 juta (image, text) pairs</strong> dari internet menggunakan
+                        <strong>contrastive learning</strong>. Hasil: model yang bisa melakukan <strong>zero-shot
+                            classification</strong>
+                        tanpa perlu training tambahan!
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Mengapa CLIP penting?</h4>
+                <ul>
+                    <li>🎯 <strong>Zero-shot transfer</strong>: Classify images tanpa training examples</li>
+                    <li>🌐 <strong>Multimodal understanding</strong>: Bridge vision & language</li>
+                    <li>⚡ <strong>Flexible</strong>: Text prompt sebagai classifier</li>
+                    <li>🚀 <strong>Foundation model</strong>: Base untuk DALL-E, Stable Diffusion</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>🎯 Yang Akan Dipelajari</h4>
+                <div class="learning-grid">
+                    <div class="learning-item">
+                        <div class="icon">🔗</div>
+                        <h4>Contrastive Learning</h4>
+                        <p>InfoNCE loss dan pairing</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">🏗️</div>
+                        <h4>Dual Encoders</h4>
+                        <p>Image & text encoders</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">📊</div>
+                        <h4>Training</h4>
+                        <p>Similarity matrix & loss</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">🎯</div>
+                        <h4>Zero-Shot</h4>
+                        <p>Classification tanpa examples</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🌈 Multimodal Duality</h4>
+                <div class="dual-column">
+                    <div class="image-column">
+                        <div class="column-title">🖼️ Vision</div>
+                        <p>Images processed dengan Vision Transformer (ViT) atau ResNet</p>
+                        <p>Output: 512-dim embedding vector</p>
+                    </div>
+                    <div class="text-column">
+                        <div class="column-title">📝 Language</div>
+                        <p>Text processed dengan Transformer encoder</p>
+                        <p>Output: 512-dim embedding vector</p>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <p>Kedua encoder di-align dalam <strong>shared embedding space</strong> sehingga
+                        image dan matching text punya embedding yang similar!</p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-next" onclick="navigateToSection('contrastive')">Mulai Belajar →</button>
+            </div>
+        </section>
+
+        <!-- Section 2: Contrastive Learning -->
+        <section id="contrastive" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Contrastive Learning</h2>
+                <p class="section-subtitle">Belajar dari Perbandingan</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🔗 Prinsip Contrastive Learning</h3>
+                <p>
+                    <strong>Contrastive learning</strong> melatih model untuk membedakan:
+                </p>
+                <ul>
+                    <li>✅ <strong>Positive pairs</strong>: (image, matching caption) - harus dekat</li>
+                    <li>❌ <strong>Negative pairs</strong>: (image, non-matching caption) - harus jauh</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>📐 InfoNCE Loss</h4>
+                <p>
+                    CLIP menggunakan <strong>InfoNCE (Noise Contrastive Estimation)</strong> loss:
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">L = -log(exp(sim(i,t)/τ) / Σ<sub>j</sub> exp(sim(i,t<sub>j</sub>)/τ))
+                    </div>
+                    <div class="formula-step">sim(i,t) = (I·T) / (||I|| ||T||) (cosine similarity)</div>
+                    <div class="formula-step">τ: temperature parameter (learnable)</div>
+                    <p class="note">
+                        Maximize similarity untuk positive pair, minimize untuk negatives
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎨 Example: Batch dengan N=4 pairs</h4>
+                <div class="pair-grid">
+                    <div class="pair-card positive">
+                        <div class="pair-image">🐕 [Image: Golden retriever]</div>
+                        <div class="pair-text">"a golden retriever dog"</div>
+                        <small style="color: var(--color-similarity);">✓ Positive pair (diagonal)</small>
+                    </div>
+                    <div class="pair-card negative">
+                        <div class="pair-image">🐕 [Image: Golden retriever]</div>
+                        <div class="pair-text">"a red sports car"</div>
+                        <small style="color: var(--text-muted);">✗ Negative pair (off-diagonal)</small>
+                    </div>
+                    <div class="pair-card negative">
+                        <div class="pair-image">🚗 [Image: Sports car]</div>
+                        <div class="pair-text">"a golden retriever dog"</div>
+                        <small style="color: var(--text-muted);">✗ Negative pair (off-diagonal)</small>
+                    </div>
+                    <div class="pair-card positive">
+                        <div class="pair-image">🚗 [Image: Sports car]</div>
+                        <div class="pair-text">"a red sports car"</div>
+                        <small style="color: var(--color-similarity);">✓ Positive pair (diagonal)</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Contrastive Pairing Animation</h4>
+                <div class="contrastive-viz">
+                    <canvas id="contrastiveCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playContrastive">▶ Play Animation</button>
+                        <button class="btn-control" id="resetContrastive">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="contrastiveStatus">
+                        Visualize positive & negative pairs
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('intro')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('dual-encoders')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 3: Dual Encoders -->
+        <section id="dual-encoders" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Dual Encoders</h2>
+                <p class="section-subtitle">Image & Text Encoders</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🏗️ CLIP Architecture</h3>
+                <p>
+                    CLIP terdiri dari <strong>dua encoder terpisah</strong> yang dilatih secara joint:
+                </p>
+
+                <div class="encoder-pair">
+                    <div class="encoder-box image-encoder">
+                        <div class="encoder-title">🖼️ Image Encoder</div>
+                        <div class="encoder-flow">Input: Image (224×224)</div>
+                        <div class="encoder-flow">↓</div>
+                        <div class="encoder-flow">Vision Transformer (ViT) or ResNet-50</div>
+                        <div class="encoder-flow">↓</div>
+                        <div class="encoder-flow">Linear projection</div>
+                        <div class="encoder-flow">↓</div>
+                        <div class="encoder-flow">L2 normalize</div>
+                        <div class="encoder-flow">↓</div>
+                        <div class="encoder-flow">Output: 512-dim embedding</div>
+                    </div>
+
+                    <div class="encoder-box text-encoder">
+                        <div class="encoder-title">📝 Text Encoder</div>
+                        <div class="encoder-flow">Input: Text (max 77 tokens)</div>
+                        <div class="encoder-flow">↓</div>
+                        <div class="encoder-flow">Tokenization + embedding</div>
+                        <div class="encoder-flow">↓</div>
+                        <div class="encoder-flow">Transformer (12 layers)</div>
+                        <div class="encoder-flow">↓</div>
+                        <div class="encoder-flow">Linear projection</div>
+                        <div class="encoder-flow">↓</div>
+                        <div class="encoder-flow">L2 normalize</div>
+                        <div class="encoder-flow">↓</div>
+                        <div class="encoder-flow">Output: 512-dim embedding</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>⚙️ Key Components</h4>
+                <ul>
+                    <li>🖼️ <strong>Vision Transformer (ViT)</strong>: Patch-based image processing</li>
+                    <li>📝 <strong>Text Transformer</strong>: Masked self-attention untuk text</li>
+                    <li>🎯 <strong>Projection heads</strong>: Map ke shared embedding space</li>
+                    <li>📏 <strong>L2 normalization</strong>: Ensure embeddings pada unit sphere</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Encoder Architecture Animation</h4>
+                <div class="encoder-viz">
+                    <canvas id="encoderCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playEncoder">▶ Play Animation</button>
+                        <button class="btn-control" id="resetEncoder">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="encoderStatus">
+                        See how encoders process inputs
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Embedding Space</h4>
+                <div class="highlight-box">
+                    <p>
+                        Kedua encoder menghasilkan embeddings dalam <strong>same 512-dimensional space</strong>.
+                        Contrastive training membuat:
+                    </p>
+                    <ul>
+                        <li>✅ Matched image-text memiliki <strong>high cosine similarity</strong></li>
+                        <li>❌ Unmatched pairs memiliki <strong>low similarity</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('contrastive')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('training')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 4: Training Process -->
+        <section id="training" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Training Process</h2>
+                <p class="section-subtitle">Symmetric Contrastive Loss</p>
+            </header>
+
+            <div class="content-card">
+                <h3>📊 Training Batch</h3>
+                <p>
+                    Training CLIP dilakukan dengan batch besar (e.g., N=32,768):
+                </p>
+                <ol>
+                    <li>Batch of N (image, text) pairs dari dataset</li>
+                    <li>Encode images → N image embeddings (I₁, I₂, ..., I_N)</li>
+                    <li>Encode texts → N text embeddings (T₁, T₂, ..., T_N)</li>
+                    <li>Compute N×N similarity matrix</li>
+                    <li>Calculate symmetric loss</li>
+                </ol>
+            </div>
+
+            <div class="content-card">
+                <h4>🔥 Similarity Matrix</h4>
+                <p>
+                    Untuk batch N=4, similarity matrix S menunjukkan cosine similarity antara semua pairs:
+                </p>
+                <div class="heatmap-container">
+                    <div style="margin-bottom: var(--space-sm); text-align: center;">
+                        <div
+                            style="display: inline-grid; grid-template-columns: 80px repeat(4, 50px); gap: 5px; text-align: center;">
+                            <div></div>
+                            <div style="color: var(--color-text); font-size: 0.75rem;">T₁</div>
+                            <div style="color: var(--color-text); font-size: 0.75rem;">T₂</div>
+                            <div style="color: var(--color-text); font-size: 0.75rem;">T₃</div>
+                            <div style="color: var(--color-text); font-size: 0.75rem;">T₄</div>
+
+                            <div
+                                style="color: var(--color-image); font-size: 0.75rem; display: flex; align-items: center;">
+                                I₁</div>
+                            <div class="heatmap-cell positive">0.89</div>
+                            <div class="heatmap-cell negative">0.12</div>
+                            <div class="heatmap-cell negative">0.05</div>
+                            <div class="heatmap-cell negative">0.18</div>
+
+                            <div
+                                style="color: var(--color-image); font-size: 0.75rem; display: flex; align-items: center;">
+                                I₂</div>
+                            <div class="heatmap-cell negative">0.15</div>
+                            <div class="heatmap-cell positive">0.91</div>
+                            <div class="heatmap-cell negative">0.08</div>
+                            <div class="heatmap-cell negative">0.11</div>
+
+                            <div
+                                style="color: var(--color-image); font-size: 0.75rem; display: flex; align-items: center;">
+                                I₃</div>
+                            <div class="heatmap-cell negative">0.09</div>
+                            <div class="heatmap-cell negative">0.14</div>
+                            <div class="heatmap-cell positive">0.87</div>
+                            <div class="heatmap-cell negative">0.10</div>
+
+                            <div
+                                style="color: var(--color-image); font-size: 0.75rem; display: flex; align-items: center;">
+                                I₄</div>
+                            <div class="heatmap-cell negative">0.13</div>
+                            <div class="heatmap-cell negative">0.07</div>
+                            <div class="heatmap-cell negative">0.16</div>
+                            <div class="heatmap-cell positive">0.93</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: var(--text-muted); font-size: 0.875rem;">
+                        <span style="color: var(--color-similarity);">●</span> Diagonal = positive pairs (high
+                        similarity)<br>
+                        <span style="color: var(--text-muted);">●</span> Off-diagonal = negative pairs (low similarity)
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📐 Symmetric Loss</h4>
+                <div class="formula-box">
+                    <div class="main-formula">L = (L_I→T + L_T→I) / 2</div>
+                    <div class="formula-step">L_I→T: image-to-text (row-wise softmax)</div>
+                    <div class="formula-step">L_T→I: text-to-image (column-wise softmax)</div>
+                    <p class="note">
+                        Symmetric loss ensures bidirectional alignment!
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Training Batch Animation</h4>
+                <div class="training-viz">
+                    <canvas id="trainingCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playTraining">▶ Play Animation</button>
+                        <button class="btn-control" id="resetTraining">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="trainingStatus">
+                        Visualize batch processing & similarity matrix
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>⚡ Training Details</h4>
+                <ul>
+                    <li>📊 <strong>Dataset</strong>: 400M (image, text) pairs dari internet</li>
+                    <li>🎯 <strong>Batch size</strong>: 32,768 (very large!)</li>
+                    <li>⏱️ <strong>Training time</strong>: ~12 days pada 592 V100 GPUs</li>
+                    <li>🔧 <strong>Optimizer</strong>: AdamW dengan cosine learning rate schedule</li>
+                </ul>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('dual-encoders')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('zeroshot')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 5: Zero-Shot Classification -->
+        <section id="zeroshot" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Zero-Shot Classification</h2>
+                <p class="section-subtitle">Classification Tanpa Training Examples</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🎯 Apa itu Zero-Shot?</h3>
+                <p>
+                    <strong>Zero-shot classification</strong>: Model bisa classify ke class yang
+                    <strong>belum pernah dilihat saat training</strong>!
+                </p>
+                <div class="highlight-box">
+                    <p><strong>How?</strong></p>
+                    <p>
+                        Gunakan <strong>text prompts</strong> sebagai classifiers. Untuk classify image ke {dog, cat,
+                        car}:
+                    </p>
+                    <ul>
+                        <li>Generate prompts: "a photo of a dog", "a photo of a cat", "a photo of a car"</li>
+                        <li>Encode semua prompts → text embeddings</li>
+                        <li>Encode image → image embedding</li>
+                        <li>Compute similarity dengan semua class prompts</li>
+                        <li>Argmax → predicted class!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Example: Image Classification</h4>
+                <p><strong>Task</strong>: Classify image ke 3 classes</p>
+
+                <div
+                    style="display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-lg); margin: var(--space-md) 0;">
+                    <div>
+                        <div
+                            style="background: rgba(245, 158, 11, 0.1); border: 2px solid var(--color-image); padding: var(--space-md); border-radius: var(--radius-md);">
+                            <div style="font-weight: 600; margin-bottom: var(--space-sm); color: var(--color-image);">
+                                Input Image</div>
+                            <div style="font-size: 3rem; text-align: center;">🐕</div>
+                            <div style="text-align: center; margin-top: var(--space-sm);">Golden Retriever</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div
+                            style="background: rgba(59, 130, 246, 0.1); border: 2px solid var(--color-text); padding: var(--space-md); border-radius: var(--radius-md);">
+                            <div style="font-weight: 600; margin-bottom: var(--space-sm); color: var(--color-text);">
+                                Class Prompts & Scores</div>
+                            <div style="margin: var(--space-xs) 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>"a photo of a dog"</span>
+                                    <span style="color: var(--color-similarity); font-weight: 700;">92.5% ✓</span>
+                                </div>
+                                <div
+                                    style="background: var(--color-similarity); height: 8px; width: 92%; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div style="margin: var(--space-xs) 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>"a photo of a cat"</span>
+                                    <span style="color: var(--text-muted);">4.8%</span>
+                                </div>
+                                <div
+                                    style="background: rgba(255,255,255,0.2); height: 8px; width: 5%; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div style="margin: var(--space-xs) 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>"a photo of a car"</span>
+                                    <span style="color: var(--text-muted);">2.7%</span>
+                                </div>
+                                <div
+                                    style="background: rgba(255,255,255,0.2); height: 8px; width: 3%; border-radius: 4px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Zero-Shot Demo Animation</h4>
+                <div class="zeroshot-viz">
+                    <canvas id="zeroshotCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playZeroshot">▶ Play Demo</button>
+                        <button class="btn-control" id="resetZeroshot">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="zeroshotStatus">
+                        Try zero-shot classification interactively
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Prompt Engineering</h4>
+                <p>
+                    Prompt design sangat mempengaruhi akurasi! Tips:
+                </p>
+                <ul>
+                    <li>🎯 <strong>Template</strong>: "a photo of a {class}" works well</li>
+                    <li>📝 <strong>Ensemble</strong>: Use multiple prompts per class</li>
+                    <li>🔍 <strong>Context</strong>: Add context, e.g. "a photo of a {class}, a type of pet"</li>
+                    <li>🌐 <strong>Domain</strong>: Adjust untuk domain-specific (medical, satellite)</li>
+                </ul>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('training')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('applications')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 6: Applications -->
+        <section id="applications" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Applications</h2>
+                <p class="section-subtitle">CLIP Use Cases</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🚀 CLIP Applications</h3>
+                <p>
+                    CLIP telah menjadi <strong>foundation model</strong> untuk berbagai aplikasi multimodal:
+                </p>
+
+                <div class="application-grid">
+                    <div class="application-card">
+                        <h4>🔍 Image-Text Retrieval</h4>
+                        <p>Search images dengan query text, atau sebaliknya</p>
+                        <div class="example">Example: "Find sunrise beach photos" → retrieves matching images</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🎨 Text-to-Image Generation</h4>
+                        <p>CLIP guides generation models (DALL-E, Stable Diffusion)</p>
+                        <div class="example">Example: CLIP loss steers diffusion process to match prompt</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>📊 Zero-Shot Classification</h4>
+                        <p>Classify tanpa training examples untuk new classes</p>
+                        <div class="example">Example: Classify medical images ke rare diseases</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>❓ Visual Question Answering</h4>
+                        <p>Answer questions tentang image content</p>
+                        <div class="example">Example: "What color is the car?" → "Red"</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🏷️ Image Captioning</h4>
+                        <p>Generate descriptive captions untuk images</p>
+                        <div class="example">Example: Image → "A golden retriever playing in the park"</div>
+                    </div>
+
+                    <div class="application-card">
+                        <h4>🎯 Object Detection</h4>
+                        <p>Open-vocabulary object detection dengan text queries</p>
+                        <div class="example">Example: Detect "person wearing red hat" tanpa training</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🌟 Notable Projects Using CLIP</h4>
+                <ul>
+                    <li>🎨 <strong>DALL-E 2</strong>: Text-to-image generation dengan CLIP-guided diffusion</li>
+                    <li>🖼️ <strong>Stable Diffusion</strong>: Open-source generation model using CLIP text encoder</li>
+                    <li>🔍 <strong>OpenCLIP</strong>: Open reproduction of CLIP dengan larger datasets</li>
+                    <li>🎬 <strong>Video understanding</strong>: Extend CLIP to video domain (CLIP4Clip)</li>
+                    <li>🏥 <strong>Medical imaging</strong>: Zero-shot diagnosis dengan domain-specific prompts</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Why CLIP is Powerful</h4>
+                <div class="highlight-box">
+                    <p><strong>Key advantages:</strong></p>
+                    <ul>
+                        <li>✅ <strong>No labeled data needed</strong> for new tasks</li>
+                        <li>✅ <strong>Flexible via text</strong> - just change prompts</li>
+                        <li>✅ <strong>Generalizes well</strong> across domains</li>
+                        <li>✅ <strong>Composable</strong> - combine with other models</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('zeroshot')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('implementation')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 7: Implementation -->
+        <section id="implementation" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Implementation</h2>
+                <p class="section-subtitle">PyTorch Code</p>
+            </header>
+
+            <div class="content-card">
+                <h3>💻 CLIP Model Implementation</h3>
+                <div class="code-block">
+                    <pre><code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class CLIP(nn.Module):
+    def __init__(self, image_encoder, text_encoder, embed_dim=512):
+        super().__init__()
+        self.image_encoder = image_encoder  # ViT or ResNet
+        self.text_encoder = text_encoder    # Transformer
+        
+        # Projection heads
+        self.image_proj = nn.Linear(image_encoder.output_dim, embed_dim)
+        self.text_proj = nn.Linear(text_encoder.output_dim, embed_dim)
+        
+        # Learnable temperature
+        self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1/0.07))
+    
+    def encode_image(self, images):
+        # images: (batch, 3, 224, 224)
+        image_features = self.image_encoder(images)
+        image_embeds = self.image_proj(image_features)
+        image_embeds = F.normalize(image_embeds, dim=-1)
+        return image_embeds
+    
+    def encode_text(self, text):
+        # text: (batch, max_length) token ids
+        text_features = self.text_encoder(text)
+        text_embeds = self.text_proj(text_features)
+        text_embeds = F.normalize(text_embeds, dim=-1)
+        return text_embeds
+    
+    def forward(self, images, texts):
+        image_embeds = self.encode_image(images)  # (N, embed_dim)
+        text_embeds = self.encode_text(texts)      # (N, embed_dim)
+        
+        # Scaled cosine similarity
+        logit_scale = self.logit_scale.exp()
+        logits_per_image = logit_scale * image_embeds @ text_embeds.T  # (N, N)
+        logits_per_text = logits_per_image.T
+        
+        return logits_per_image, logits_per_text</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎓 Training Loop</h4>
+                <div class="code-block">
+                    <pre><code>def train_clip(model, dataloader, optimizer, device):
+    model.train()
+    
+    for images, texts in dataloader:
+        images = images.to(device)
+        texts = texts.to(device)
+        
+        # Forward pass
+        logits_per_image, logits_per_text = model(images, texts)
+        
+        # Ground truth: diagonal matrix (positive pairs)
+        batch_size = images.shape[0]
+        labels = torch.arange(batch_size, device=device)
+        
+        # Symmetric loss
+        loss_img = F.cross_entropy(logits_per_image, labels)
+        loss_txt = F.cross_entropy(logits_per_text, labels)
+        loss = (loss_img + loss_txt) / 2
+        
+        # Backward
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        
+        return loss.item()</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎯 Zero-Shot Inference</h4>
+                <div class="code-block">
+                    <pre><code>def zero_shot_classify(model, image, class_names, device):
+    """
+    Classify image to one of class_names without training.
+    """
+    model.eval()
+    
+    # Prepare image
+    image = preprocess(image).unsqueeze(0).to(device)
+    
+    # Generate text prompts
+    prompts = [f"a photo of a {name}" for name in class_names]
+    text_tokens = tokenize(prompts).to(device)
+    
+    with torch.no_grad():
+        # Encode
+        image_embed = model.encode_image(image)      # (1, 512)
+        text_embeds = model.encode_text(text_tokens)  # (num_classes, 512)
+        
+        # Compute similarities
+        logit_scale = model.logit_scale.exp()
+        similarities = logit_scale * image_embed @ text_embeds.T  # (1, num_classes)
+        
+        # Softmax to get probabilities
+        probs = F.softmax(similarities, dim=-1).squeeze(0)
+        
+        # Prediction
+        pred_idx = probs.argmax().item()
+        pred_class = class_names[pred_idx]
+        pred_conf = probs[pred_idx].item()
+        
+    return pred_class, pred_conf, probs
+
+# Example usage
+class_names = ["dog", "cat", "car", "airplane"]
+pred, conf, all_probs = zero_shot_classify(model, image, class_names, device)
+print(f"Prediction: {pred} ({conf*100:.1f}% confidence)")</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔧 Using Pre-trained CLIP</h4>
+                <div class="code-block">
+                    <pre><code>import clip
+
+# Load pre-trained CLIP
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model, preprocess = clip.load("ViT-B/32", device=device)
+
+# Load and preprocess image
+from PIL import Image
+image = preprocess(Image.open("dog.jpg")).unsqueeze(0).to(device)
+
+# Prepare text
+text = clip.tokenize(["a dog", "a cat", "a car"]).to(device)
+
+# Get predictions
+with torch.no_grad():
+    image_features = model.encode_image(image)
+    text_features = model.encode_text(text)
+    
+    logits_per_image, logits_per_text = model(image, text)
+    probs = logits_per_image.softmax(dim=-1).cpu().numpy()
+
+print("Label probs:", probs)  # [[0.92, 0.06, 0.02]]</code></pre>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('applications')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('advanced')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 8: Advanced Topics -->
+        <section id="advanced" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Advanced Topics</h2>
+                <p class="section-subtitle">Beyond Basic CLIP</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🚀 CLIP Variants</h3>
+                <ul>
+                    <li>🌐 <strong>OpenCLIP</strong>: Open-source reproduction dengan larger datasets (LAION-2B)</li>
+                    <li>📊 <strong>MetaCLIP</strong>: Curated training data for better quality</li>
+                    <li>🎬 <strong>CLIP4Clip</strong>: Extend to video understanding</li>
+                    <li>🔊 <strong>AudioCLIP</strong>: Add audio modality</li>
+                    <li>🏥 <strong>MedCLIP</strong>: Domain-specific for medical imaging</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>🔧 Fine-tuning Strategies</h4>
+                <div class="highlight-box">
+                    <p><strong>When to fine-tune:</strong></p>
+                    <ul>
+                        <li>✅ Domain dengan visual concepts sangat specific</li>
+                        <li>✅ Ada labeled data untuk target task</li>
+                        <li>✅ Zero-shot performance tidak cukup</li>
+                    </ul>
+                </div>
+
+                <p><strong>Fine-tuning approaches:</strong></p>
+                <ul>
+                    <li>🎯 <strong>Full fine-tuning</strong>: Update all parameters</li>
+                    <li>⚡ <strong>Adapter layers</strong>: Add small trainable modules</li>
+                    <li>🔒 <strong>Prompt tuning</strong>: Learn continuous prompts</li>
+                    <li>📊 <strong>Linear probe</strong>: Only train classifier head</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Tips & Best Practices</h4>
+                <ul>
+                    <li>📝 <strong>Prompt engineering</strong>: Experiment with different templates</li>
+                    <li>🎯 <strong>Ensemble</strong>: Average predictions across multiple prompts</li>
+                    <li>🔍 <strong>Image preprocessing</strong>: Follow CLIP's normalization</li>
+                    <li>⚖️ <strong>Scaling</strong>: Larger models (ViT-L/14) perform better but slower</li>
+                    <li>🌐 <strong>Multilingual</strong>: Use M-CLIP for non-English text</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>🔮 Future Directions</h4>
+                <ul>
+                    <li>🎨 <strong>Generative models</strong>: Better integration dengan diffusion models</li>
+                    <li>🎬 <strong>Video understanding</strong>: Temporal consistency</li>
+                    <li>🧠 <strong>3D vision</strong>: Extend to 3D scenes</li>
+                    <li>🌍 <strong>Multilingual & multicultural</strong>: Better global coverage</li>
+                    <li>⚡ <strong>Efficiency</strong>: Smaller models for edge deployment</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>✅ Selamat!</h4>
+                <div class="completion-box">
+                    <h4>🎉 Tutorial Selesai!</h4>
+                    <p>Anda telah mempelajari:</p>
+                    <ul>
+                        <li>✅ Contrastive learning dengan InfoNCE loss</li>
+                        <li>✅ Dual encoder architecture (Image + Text)</li>
+                        <li>✅ Training process dengan similarity matrix</li>
+                        <li>✅ Zero-shot classification tanpa examples</li>
+                        <li>✅ Applications & PyTorch implementation</li>
+                        <li>✅ Advanced variants & fine-tuning</li>
+                    </ul>
+
+                    <div class="next-steps">
+                        <h4>🚀 Next Steps</h4>
+                        <p>• Try CLIP dengan your own images/texts</p>
+                        <p>• Explore OpenCLIP for larger models</p>
+                        <p>• Read paper: "Learning Transferable Visual Models From Natural Language Supervision"
+                            (Radford et al., 2021)</p>
+                        <p>• Build applications: retrieval, generation, VQA</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('implementation')">← Kembali</button>
+                <button class="btn-restart" onclick="navigateToSection('intro')">↻ Mulai Lagi</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript -->
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>

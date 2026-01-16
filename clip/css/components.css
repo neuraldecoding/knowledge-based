@@ -1,0 +1,455 @@
+/* ============================================
+   CLIP TUTORIAL - COMPONENT STYLES
+   Multimodal components and visualizations
+   ============================================ */
+
+/* ============================================
+   LEARNING GRID
+   ============================================ */
+
+.learning-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.learning-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.learning-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-4px);
+}
+
+.learning-item .icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-sm);
+}
+
+.learning-item h4 {
+    font-size: 1.125rem;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+}
+
+.learning-item p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* ============================================
+   MULTIMODAL BOXES
+   ============================================ */
+
+.dual-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.image-column {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%);
+    border: 2px solid rgba(245, 158, 11, 0.3);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+}
+
+.text-column {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.1) 100%);
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+}
+
+.column-title {
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+}
+
+.image-column .column-title {
+    color: var(--color-image);
+}
+
+.text-column .column-title {
+    color: var(--color-text);
+}
+
+/* ============================================
+   SPECIAL BOXES
+   ============================================ */
+
+.highlight-box {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-left: 4px solid var(--accent-primary);
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+    margin: var(--space-md) 0;
+}
+
+.formula-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+    text-align: center;
+}
+
+.main-formula {
+    font-family: var(--font-code);
+    font-size: 1.5rem;
+    color: var(--accent-primary);
+    margin: var(--space-sm) 0;
+}
+
+.formula-step {
+    font-family: var(--font-code);
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    margin: var(--space-xs) 0;
+}
+
+.note {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: var(--space-xs);
+}
+
+/* ============================================
+   CLIP VISUALIZATIONS
+   ============================================ */
+
+.contrastive-viz,
+.encoder-viz,
+.training-viz,
+.zeroshot-viz,
+.similarity-viz,
+.embedding-viz {
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: var(--radius-lg);
+    margin: var(--space-md) 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contrastive-viz canvas,
+.encoder-viz canvas,
+.training-viz canvas,
+.zeroshot-viz canvas,
+.similarity-viz canvas,
+.embedding-viz canvas {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.2);
+    margin-bottom: var(--space-md);
+}
+
+.animation-controls {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.animation-status {
+    margin-top: var(--space-md);
+    padding: var(--space-sm);
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    color: var(--accent-primary);
+    font-weight: 500;
+}
+
+/* ============================================
+   SIMILARITY MATRIX / HEATMAP
+   ============================================ */
+
+.heatmap-container {
+    display: flex;
+    justify-content: center;
+    margin: var(--space-md) 0;
+}
+
+.heatmap-grid {
+    display: grid;
+    gap: 2px;
+    padding: var(--space-sm);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-sm);
+}
+
+.heatmap-cell {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.heatmap-cell.positive {
+    background: var(--color-similarity);
+    color: white;
+}
+
+.heatmap-cell.negative {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-muted);
+}
+
+/* ============================================
+   COMPARISON TABLE
+   ============================================ */
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-md) 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comparison-table th {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.comparison-table td {
+    color: var(--text-secondary);
+}
+
+.comparison-table .highlight {
+    color: var(--color-similarity);
+    font-weight: 600;
+}
+
+/* ============================================
+   CODE BLOCKS
+   ============================================ */
+
+.code-block {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin: var(--space-md) 0;
+    overflow-x: auto;
+}
+
+.code-block pre {
+    font-family: var(--font-code);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.code-block code {
+    font-family: var(--font-code);
+}
+
+/* ============================================
+   PAIR DISPLAY
+   ============================================ */
+
+.pair-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.pair-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.pair-card.positive {
+    border-color: var(--color-similarity);
+}
+
+.pair-card.negative {
+    border-color: rgba(255, 255, 255, 0.1);
+    opacity: 0.6;
+}
+
+.pair-image,
+.pair-text {
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+}
+
+.pair-image {
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 3px solid var(--color-image);
+}
+
+.pair-text {
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 3px solid var(--color-text);
+}
+
+/* ============================================
+   APPLICATION CARDS
+   ============================================ */
+
+.application-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.application-card {
+    padding: var(--space-lg);
+    background: rgba(16, 185, 129, 0.05);
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.application-card h4 {
+    color: var(--color-similarity);
+    margin-bottom: var(--space-sm);
+}
+
+.application-card p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.application-card .example {
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   ENCODER BOXES
+   ============================================ */
+
+.encoder-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    margin: var(--space-md) 0;
+}
+
+.encoder-box {
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.image-encoder {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%);
+    border: 2px solid var(--color-image);
+}
+
+.text-encoder {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.1) 100%);
+    border: 2px solid var(--color-text);
+}
+
+.encoder-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+}
+
+.image-encoder .encoder-title {
+    color: var(--color-image);
+}
+
+.text-encoder .encoder-title {
+    color: var(--color-text);
+}
+
+.encoder-flow {
+    font-family: var(--font-code);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: var(--space-xs) 0;
+}
+
+/* ============================================
+   COMPLETION BOX
+   ============================================ */
+
+.completion-box {
+    background: var(--gradient-primary);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.completion-box h4 {
+    font-size: 1.5rem;
+    margin: var(--space-md) 0;
+    color: white;
+}
+
+.completion-box ul {
+    list-style: none;
+    margin: var(--space-md) 0;
+    text-align: left;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.completion-box li {
+    padding: var(--space-xs) 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+
+    .dual-column,
+    .encoder-pair {
+        grid-template-columns: 1fr;
+    }
+
+    .learning-grid,
+    .application-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .heatmap-cell {
+        width: 30px;
+        height: 30px;
+        font-size: 0.625rem;
+    }
+}
