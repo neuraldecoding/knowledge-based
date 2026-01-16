@@ -120,7 +120,7 @@ export function initTreeAnimation(canvas, mode = 'basic') {
             drawCircle(x, leafY, nodeSize, colors.leaf, word);
 
             // Embedding arrow
-            drawArrow(x, leafY - nodeSize, x, leaf Y - 60);
+            drawArrow(x, leafY - nodeSize, x, leafY - 60);
 
             // Embedding box
             ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';

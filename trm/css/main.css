@@ -89,8 +89,7 @@ body {
    ============================================ */
 
 body {
-    display: grid;
-    grid-template-columns: 300px 1fr;
+    display: block;
     min-height: 100vh;
 }
 
@@ -197,7 +196,8 @@ body {
 .main-content {
     margin-left: 300px;
     padding: var(--space-xl);
-    max-width: 1200px;
+    max-width: none;
+    width: auto;
 }
 
 /* ============================================
