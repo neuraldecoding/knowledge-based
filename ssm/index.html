@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial State Space Models - Sequence Modeling Modern</title>
+    <meta name="description" content="Tutorial interaktif tentang State Space Models untuk sequence modeling dengan animasi">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="logo">⚡ State Space Models</h1>
+            <p class="subtitle">Tutorial Inter aktif</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item active" data-section="intro">
+                <span class="nav-number">01</span>
+                <span class="nav-title">Pengenalan</span>
+            </li>
+            <li class="nav-item" data-section="basics">
+                <span class="nav-number">02</span>
+                <span class="nav-title">State Space Basics</span>
+            </li>
+            <li class="nav-item" data-section="discretization">
+                <span class="nav-number">03</span>
+                <span class="nav-title">Discretization</span>
+            </li>
+            <li class="nav-item" data-section="recurrent">
+                <span class="nav-number">04</span>
+                <span class="nav-title">Recurrent Mode</span>
+            </li>
+            <li class="nav-item" data-section="convolution">
+                <span class="nav-number">05</span>
+                <span class="nav-title">Convolutional Mode</span>
+            </li>
+            <li class="nav-item" data-section="training">
+                <span class="nav-number">06</span>
+                <span class="nav-title">Training</span>
+            </li>
+            <li class="nav-item" data-section="mamba">
+                <span class="nav-number">07</span>
+                <span class="nav-title">Mamba Architecture</span>
+            </li>
+            <li class="nav-item" data-section="implementation">
+                <span class="nav-number">08</span>
+                <span class="nav-title">Implementation</span>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Section 1: Pengenalan -->
+        <section id="intro" class="tutorial-section active">
+            <header class="section-header">
+                <h2 class="section-title">State Space Models</h2>
+                <p class="section-subtitle">Sequence Modeling dengan Linear Time Complexity</p>
+            </header>
+
+            <div class="content-card">
+                <h3>⚡ Apa that State Space Models?</h3>
+                <p>
+                    State Space Models (SSMs) adalah framework matematis untuk memproses data sequence dengan 
+                    <strong>efisiensi tinggi</strong>. SSMs menggabungkan keunggulan RNNs dan Transformers:
+                </p>
+                <ul>
+                    <li>📊 <strong>Linear time complexity</strong> saat inference (seperti RNN)</li>
+                    <li>⚡ <strong>Parallelizable training</strong> dengan convolution (seperti Transformer)</li>
+                    <li>🎯 <strong>Long-range dependencies</strong> tanpa degradasi</li>
+                    <li>🔄 <strong>Continuous-time modeling</strong> untuk flexibility</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Mengapa SSM penting?</h4>
+                <div class="highlight-box">
+                    <p><strong>Problem dengan existing models:</strong></p>
+                    <ul>
+                        <li>❌ <strong>RNN</strong>: Sequential processing lambat, vanishing gradients</li>
+                        <li>❌ <strong>Transformer</strong>: O(L²) complexity, memory-intensive untuk long sequences</li>
+                        <li>✅ <strong>SSM</strong>: O(L) inference, O(L log L) training, long-range modeling</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎯 Yang Akan Dipelajari</h4>
+                <div class="learning-grid">
+                    <div class="learning-item">
+                        <div class="icon">📐</div>
+                        <h4>State Space Mathematics</h4>
+                        <p>Continuous dan discrete systems</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">🔄</div>
+                        <h4>Dual Modes</h4>
+                        <p>Recurrent dan convolutional</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">🧠</div>
+                        <h4>Mamba Architecture</h4>
+                        <p>Selective state spaces</p>
+                    </div>
+                    <div class="learning-item">
+                        <div class="icon">💻</div>
+                        <h4>Implementation</h4>
+                        <p>PyTorch S4 dan Mamba</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Comparison Table</h4>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Training</th>
+                            <th>Inference</th>
+                            <th>Long Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>RNN</strong></td>
+                            <td>O(L) sequential</td>
+                            <td>O(L)</td>
+                            <td>❌ Poor</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Transformer</strong></td>
+                            <td>O(L²) parallel</td>
+                            <td>O(L²)</td>
+                            <td>✅ Excellent</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight"><strong>SSM (S4/Mamba)</strong></td>
+                            <td class="highlight">O(L log L) parallel</td>
+                            <td class="highlight">O(L)</td>
+                            <td class="highlight">✅ Excellent</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-next" onclick="navigateToSection('basics')">Mulai Belajar →</button>
+            </div>
+        </section>
+
+        <!-- Section 2: State Space Basics -->
+        <section id="basics" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">State Space Basics</h2>
+                <p class="section-subtitle">Fondasi Matematis SSM</p>
+            </header>
+
+            <div class="content-card">
+                <h3>📐 Continuous-Time State Space</h3>
+                <p>
+                    State space model dalam continuous time didefinisikan dengan dua persamaan differensial:
+                </p>
+                
+                <div class="equation-display">
+                    <div class="equation-title">State Equation</div>
+                    <div class="equation">dx/dt = Ax(t) + Bu(t)</div>
+                    <div class="equation-vars">
+                        x(t): state vector (dimensi N)<br>
+                        u(t): input signal<br>
+                        A: state matrix (N×N)<br>
+                        B: input matrix (N×1)
+                    </div>
+                </div>
+
+                <div class="equation-display">
+                    <div class="equation-title">Output Equation</div>
+                    <div class="equation">y(t) = Cx(t) + Du(t)</div>
+                    <div class="equation-vars">
+                        y(t): output signal<br>
+                        C: output matrix (1×N)<br>
+                        D: feedthrough (skipconnection)
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Visualisasi State Transition</h4>
+                <div class="state-viz">
+                    <canvas id="stateCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playState">▶ Play Animation</button>
+                        <button class="btn-control" id="resetState">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="stateStatus">
+                        Press Play to see state evolution over time
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Analogi: RC Circuit</h4>
+                <div class="analogy-box">
+                    <p class="analogy-text">
+                        Bayangkan sebuah RC circuit (resistor-capacitor):
+                    </p>
+                    <ul>
+                        <li><strong>x(t)</strong>: voltage across capacitor (state)</li>
+                        <li><strong>u(t)</strong>: input voltage</li>
+                        <li><strong>A</strong>: decay rate (-1/RC)</li>
+                        <li><strong>B</strong>: input coupling (1/RC)</li>
+                    </ul>
+                    <p class="analogy-text">
+                        State x(t) berubah sesuai input dan "memory" sebelumnya!
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔑 Key Properties</h4>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <span class="step-number">1</span>
+                        <h4>Linearity</h4>
+                        <p>Superposisi berlaku - output untuk sum of inputs = sum of outputs</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">2</span>
+                        <h4>Time-Invariance</h4>
+                        <p>Matrices A, B, C, D konstan (tidak bergantung waktu)</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">3</span>
+                        <h4>Structured</h4>
+                        <p>Bisa gunakan structured matrices (HiPPO) untuk long-range</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('intro')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('discretization')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 3: Discretization -->
+        <section id="discretization" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Discretization</h2>
+                <p class="section-subtitle">Continuous → Discrete Conversion</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🔄 Mengapa Discretization?</h3>
+                <p>
+                    Komputer bekerja dengan <strong>discrete time steps</strong>, sementara SSM didefinisikan di continuous time.
+                    Kita perlu convert persamaan differensial ke difference equation.
+                </p>
+                
+                <div class="highlight-box">
+                    <p><strong>Step size Δ</strong>: Interval sampling (e.g., 0.001s untuk audio 1kHz)</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📐 Discrete SSM Equations</h4>
+                <div class="equation-display">
+                    <div class="equation">x_k = A̅ x_{k-1} + B̅ u_k</div>
+                    <div class="equation">y_k = C̅ x_k + D̅ u_k</div>
+                    <div class="equation-vars">
+                        A̅ = exp(ΔA) ≈ I + ΔA + (ΔA)²/2! + ...<br>
+                        B̅ = (ΔA)⁻¹(exp(ΔA) - I)B ≈ ΔB
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>⚙️ Zero-Order Hold (ZOH)</h4>
+                <p>
+                    Metode discretization paling umum: asumsikan input <strong>konstan</strong> dalam interval [kΔ, (k+1)Δ].
+                </p>
+                
+                <div class="process-steps">
+                    <div class="process-step">
+                        <span class="step-number">1</span>
+                        <h4>Sample Input</h4>
+                        <p>u(kΔ) → u_k</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">2</span>
+                        <h4>Compute A̅, B̅</h4>
+                        <p>Matrix exponentials</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">3</span>
+                        <h4>Discrete Update</h4>
+                        <p>x_k = A̅x_{k-1} + B̅u_k</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Discretization Animation</h4>
+                <div class="discretization-viz">
+                    <canvas id="discretizationCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playDiscretization">▶ Play Animation</button>
+                        <button class="btn-control" id="resetDiscretization">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="discretizationStatus">
+                        Visualize continuous→discrete conversion
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('basics')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('recurrent')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 4: Recurrent Mode -->
+        <section id="recurrent" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Recurrent Mode</h2>
+                <p class="section-subtitle">Sequential Processing - O(L) Time</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🔁 SSM as Recurrence</h3>
+                <p>
+                    Mode <strong>recurrent</strong>: process sequence element by element, seperti RNN.
+                    Berguna untuk <strong>inference/deployment</strong> (streaming).
+                </p>
+
+                <div class="equation-display">
+                    <div class="equation">x_k = A̅ x_{k-1} + B̅ u_k</div>
+                    <div class="equation">y_k = C x_k</div>
+                    <div class="equation-vars">
+                        Time complexity: O(L) untuk sequence length L<br>
+                        Space: O(N) untuk state size N
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Recurrent Flow Animation</h4>
+                <div class="recurrent-viz">
+                    <canvas id="recurrentCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playRecurrent">▶ Play</button>
+                        <button class="btn-control" id="stepRecurrent">⏯ Step</button>
+                        <button class="btn-control" id="resetRecurrent">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="recurrentStatus">
+                        Step-by-step sequential processing
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Characteristics</h4>
+                <ul>
+                    <li>✅ <strong>Fast inference</strong>: Constant time per step</li>
+                    <li>✅ <strong>Low memory</strong>: Only store current state</li>
+                    <li>✅ <strong>Streaming</strong>: Process input as it arrives</li>
+                    <li>❌ <strong>Slow training</strong>: Sequential updates tidak parallel</li>
+                </ul>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('discretization')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('convolution')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 5: Convolutional Mode -->
+        <section id="convolution" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Convolutional Mode</h2>
+                <p class="section-subtitle">Parallel Training - O(L log L)</p>
+            </header>
+
+            <div class="content-card">
+                <h3>⚡ SSM as Convolution</h3>
+                <p>
+                    SSM dapat di-reformulasi sebagai <strong>global convolution</strong>! Ini memungkinkan <strong>parallel training</strong>.
+                </p>
+
+                <div class="formula-box">
+                    <div class="main-formula">y = K ∗ u</div>
+                    <div class="formula-step">K = (C̅B̅, C̅A̅B̅, C̅A̅²B̅, ..., C̅A̅^{L-1}B̅)</div>
+                    <p class="note">K adalah SSM convolution kernel</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔢 Kernel Construction</h4>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <span class="step-number">1</span>
+                        <h4>Compute Powers</h4>
+                        <p>A̅⁰, A̅¹, A̅², ..., A̅^{L-1}</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">2</span>
+                        <h4>Build Kernel</h4>
+                        <p>K[i] = C̅ A̅^i B̅</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">3</span>
+                        <h4>FFT Convolution</h4>
+                        <p>y = IFFT(FFT(K) ⊙ FFT(u))</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Convolution Visualization</h4>
+                <div class="conv-viz">
+                    <canvas id="convolutionCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playConvolution">▶ Play Animation</button>
+                        <button class="btn-control" id="resetConvolution">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="convolutionStatus">
+                        Visualize parallel convolution operation
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>⚡ Efficiency</h4>
+                <div class="highlight-box">
+                    <p><strong>Training complexity:</strong></p>
+                    <ul>
+                        <li>Naive: O(L²) untuk convolution</li>
+                        <li>FFT: O(L log L) - Much faster!</li>
+                        <li>Fully parallelizable on GPU</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('recurrent')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('training')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 6: Training -->
+        <section id="training" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Training SSM</h2>
+                <p class="section-subtitle">Parameter Learning & Optimization</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🎓 Learned Parameters</h3>
+                <p>
+                    SSM memiliki parameter <strong>A, B, C, D</strong> yang dioptimize via backpropagation:
+                </p>
+
+                <div class="matrix-display">
+                    <div class="matrix-label">A (N×N)</div>
+                    <div class="matrix-content">State dynamics</div>
+                </div>
+                <div class="matrix-display">
+                    <div class="matrix-label">B (N×1)</div>
+                    <div class="matrix-content">Input projection</div>
+                </div>
+                <div class="matrix-display">
+                    <div class="matrix-label">C (1×N)</div>
+                    <div class="matrix-content">Output projection</div>
+                </div>
+                <div class="matrix-display">
+                    <div class="matrix-label">D (scalar)</div>
+                    <div class="matrix-content">Skip connection</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🧠 HiPPO Initialization</h4>
+                <p>
+                    <strong>High-order Polynomial Projection Operator (HiPPO)</strong>: Structured initialization untuk A yang optimal untuk long-range dependencies.
+                </p>
+                
+                <div class="analogy-box">
+                    <p class="analogy-text">
+                        HiPPO matrices "remember" history dengan polynomial approximation.
+                        Eigenvalues dirancang untuk capture different timescales!
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📈 Training Dynamics</h4>
+                <div class="training-viz">
+                    <canvas id="trainingCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="startTraining">🎓 Simulate Training</button>
+                        <button class="btn-control" id="pauseTraining">⏸ Pause</button>
+                    </div>
+                    <div class="animation-status" id="trainingStatus">
+                        Simulate SSM training progress
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🔧 Optimization Tips</h4>
+                <ul>
+                    <li>🎯 <strong>Use HiPPO initialization</strong> untuk A matrix</li>
+                    <li>⚡ <strong>Train in convolution mode</strong> (parallel)</li>
+                    <li>🔄 <strong>Deploy in recurrent mode</strong> (efficient)</li>
+                    <li>📏 <strong>Normalize state</strong> untuk numerical stability</li>
+                </ul>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('convolution')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('mamba')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 7: Mamba Architecture -->
+        <section id="mamba" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Mamba Architecture</h2>
+                <p class="section-subtitle">Selective State Spaces</p>
+            </header>
+
+            <div class="content-card">
+                <h3>🦎 Apa itu Mamba?</h3>
+                <p>
+                    <strong>Mamba</strong> adalah evolved SSM dengan <strong>selective mechanism</strong>:
+                    parameters Δ, B, C menjadi <strong>input-dependent</strong>!
+                </p>
+
+                <div class="highlight-box">
+                    <p><strong>Key Innovation:</strong></p>
+                    <p>
+                        Standard SSM: A, B, C fixed<br>
+                        Mamba: B, C, Δ = functions of input → <strong>selective focus</strong>
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎯 Selective SSM</h4>
+                <div class="equation-display">
+                    <div class="equation">B = Linear_B(x)</div>
+                    <div class="equation">C = Linear_C(x)</div>
+                    <div class="equation">Δ = Softplus(Linear_Δ(x))</div>
+                    <div class="equation-vars">
+                        x: input token<br>
+                        Δ: step size (controls memory vs. forget)<br>
+                        B, C: input/output projections
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎬 Selective Mechanism Visualization</h4>
+                <div class="selective-viz">
+                    <canvas id="selectiveCanvas" width="800" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn-control" id="playSelective">▶ Play Animation</button>
+                        <button class="btn-control" id="resetSelective">↻ Reset</button>
+                    </div>
+                    <div class="animation-status" id="selectiveStatus">
+                        See how Δ, B, C adapt per token
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>💡 Why Selective?</h4>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <span class="step-number">1</span>
+                        <h4>Content-Aware</h4>
+                        <p>Model decides what to remember/forget</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">2</span>
+                        <h4>Hardware-Efficient</h4>
+                        <p>Fused kernels, no materialization</p>
+                    </div>
+                    <div class="process-step">
+                        <span class="step-number">3</span>
+                        <h4>SOTA Performance</h4>
+                        <p>Outperforms Transformers on long-seq</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>📊 Mamba vs Transformer</h4>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Transformer</th>
+                            <th>Mamba</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Inference</td>
+                            <td>O(L²)</td>
+                            <td class="highlight">O(L)</td>
+                        </tr>
+                        <tr>
+                            <td>Memory (seq 16k)</td>
+                            <td>~10GB</td>
+                            <td class="highlight">~1GB</td>
+                        </tr>
+                        <tr>
+                            <td>Throughput</td>
+                            <td>Baseline</td>
+                            <td class="highlight">5x faster</td>
+                        </tr>
+                        <tr>
+                            <td>Quality (long-seq)</td>
+                            <td>Good</td>
+                            <td class="highlight">Better</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('training')">← Kembali</button>
+                <button class="btn-next" onclick="navigateToSection('implementation')">Lanjut →</button>
+            </div>
+        </section>
+
+        <!-- Section 8: Implementation -->
+        <section id="implementation" class="tutorial-section">
+            <header class="section-header">
+                <h2 class="section-title">Implementation</h2>
+                <p class="section-subtitle">PyTorch Code & Use Cases</p>
+            </header>
+
+            <div class="content-card">
+                <h3>💻 PyTorch S4 Implementation</h3>
+                <div class="code-block">
+                    <pre><code>import torch
+import torch.nn as nn
+
+class S4Layer(nn.Module):
+    def __init__(self, d_model, d_state=64):
+        super().__init__()
+        self.d_model = d_model
+        self.d_state = d_state
+        
+        # SSM parameters
+        self.A = nn.Parameter(torch.randn(d_state, d_state))
+        self.B = nn.Parameter(torch.randn(d_state, 1))
+        self.C = nn.Parameter(torch.randn(1, d_state))
+        self.D = nn.Parameter(torch.randn(1))
+        
+        # Discretization step size
+        self.log_step = nn.Parameter(torch.log(torch.rand(1)))
+    
+    def forward(self, u):
+        """
+        u: (batch, length, d_model)
+        Returns: (batch, length, d_model)
+        """
+        # Discretize
+        step = torch.exp(self.log_step)
+        dA = torch.matrix_exp(step * self.A)
+        dB = (dA - torch.eye(self.d_state)) @ torch.inverse(self.A) @ self.B
+        
+        # Convolutional mode (training)
+        K = self._compute_kernel(dA, dB, u.size(1))
+        y = torch.fft.ifft(
+            torch.fft.fft(K) * torch.fft.fft(u)
+        ).real
+        
+        return y</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🦎 Mamba Selective SSM</h4>
+                <div class="code-block">
+                    <pre><code>class Mamba(nn.Module):
+    def __init__(self, d_model, d_state=16):
+        super().__init__()
+        
+        # Input-dependent parameter generators
+        self.x_proj = nn.Linear(d_model, d_state * 2 + 1)
+        
+        # Static A matrix (HiPPO)
+        self.A = nn.Parameter(self._init_hippo(d_state))
+    
+    def forward(self, x):
+        """Selective SSM with data-dependent B, C, Δ"""
+        # Generate B, C, Δ from input
+        projections = self.x_proj(x)  # (B, L, 2*d_state + 1)
+        
+        delta = F.softplus(projections[..., 0])      # (B, L)
+        B = projections[..., 1:d_state+1]            # (B, L, d_state)
+        C = projections[..., d_state+1:]             # (B, L, d_state)
+        
+        # Selective scan (hardware-aware kernel)
+        y = selective_scan(x, delta, self.A, B, C)
+        return y</code></pre>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>🎯 Use Cases</h4>
+                <div class="usecase-grid">
+                    <div class="usecase-card">
+                        <h4>📈 Time Series</h4>
+                        <p>Financial forecasting, weather prediction</p>
+                        <div class="example">Example: Stock price prediction with 10k+ history</div>
+                    </div>
+                    <div class="usecase-card">
+                        <h4>🎵 Audio Processing</h4>
+                        <p>Speech recognition, music generation</p>
+                        <div class="example">Example: 16kHz audio (long sequences)</div>
+                    </div>
+                    <div class="usecase-card">
+                        <h4>🧬 DNA Sequences</h4>
+                        <p>Genomics, protein folding</p>
+                        <div class="example">Example: 100k+ nucleotide sequences</div>
+                    </div>
+                    <div class="usecase-card">
+                        <h4>📝 Long-form Text</h4>
+                        <p>Document understanding, books</p>
+                        <div class="example">Example: 32k token documents</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4>✅ Selamat!</h4>
+                <div class="completion-box">
+                    <h4>🎉 Tutorial Selesai!</h4>
+                    <p>Anda telah mempelajari:</p>
+                    <ul>
+                        <li>✅ State space mathematics (continuous & discrete)</li>
+                        <li>✅ Dual modes: recurrent & convolutional</li>
+                        <li>✅ Training dengan HiPPO initialization</li>
+                        <li>✅ Mamba selective state spaces</li>
+                        <li>✅ PyTorch implementation</li>
+                    </ul>
+                    
+                    <div class="next-steps">
+                        <h4>🚀 Next Steps</h4>
+                        <p>• Implement S4/Mamba untuk your dataset</p>
+                        <p>• Explore S4D, S5, Mamba-2 variants</p>
+                        <p>• Read papers: S4, Mamba (Gu & Dao, 2023)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-prev" onclick="navigateToSection('mamba')">← Kembali</button>
+                <button class="btn-restart" onclick="navigateToSection('intro')">↻ Mulai Lagi</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
