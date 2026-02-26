@@ -1,6 +1,8 @@
 # knowledge-based
 
-Berisi pengetahuan dasar dari metode-metode terkini. Untuk dipahami dari pemula hingga mahir. Dasar-dasar dari Machine Learning
+Berisi pengetahuan dasar dan perkembangan dari metode-metode terkini. 
+
+Dasar-dasar dari [Machine Learning](https://mml-book.github.io/book/mml-book.pdf)
 
 <img width="1280" height="714" alt="image" src="https://github.com/user-attachments/assets/e5291cd4-0f8d-44d3-b4f9-12be4192e0b8" />
 
